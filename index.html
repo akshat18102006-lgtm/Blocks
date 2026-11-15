@@ -9,6 +9,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Alex+Brush&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://vjs.zencdn.net/8.23.3/video-js.css" rel="stylesheet">
+<script src="https://vjs.zencdn.net/8.23.3/video.min.js"></script>
+<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/7.5.2/videojs.ads.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-ima/2.5.0/videojs.ima.min.js"></script>
+<!-- Requested AutoTag and pop-under integrations. The rewarded video below runs only on premium unlock. -->
+<script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+<script type="text/javascript">
+  window.addEventListener("load", function () {
+    if (!window.aclib) return;
+    aclib.runAutoTag({ zoneId: "tgguufq3s6" });
+    aclib.runPop({ zoneId: "12451358" });
+  });
+</script>
 <style>
 :root{
   --bg:#eef7ff;
@@ -2802,6 +2816,12 @@ body.gate-open .bnav,body.gate-open .site-nav,body.gate-open .site-footer,body.g
 
 
 
+
+.reward-unlock-copy { margin: 0 0 12px; color: var(--muted); font-size: .86rem; }
+.reward-video-wrap { background: #07111f; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.reward-video-wrap .video-js { width: 100%; aspect-ratio: 16 / 9; height: auto; }
+.reward-status { min-height: 1.3em; margin: 10px 0 0; color: var(--muted); font-size: .78rem; font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -3129,6 +3149,21 @@ if (window.__instantLoggedIn && window.__instantSess) {
 </footer>
 
 <!-- Premium items are available directly; no advertising unlock modal. -->
+
+<!-- Rewarded video unlock modal: premium access is granted after the ad completes. -->
+<div class="modal" id="rewardUnlockM" aria-hidden="true">
+  <div class="box" style="max-width:620px">
+    <h2>🎁 Watch a video to unlock premium</h2>
+    <p class="reward-unlock-copy" id="rewardUnlockCopy">Watch the short partner video to unlock this premium item.</p>
+    <div class="reward-video-wrap">
+      <video id="rewardVideo" class="video-js vjs-big-play-centered" controls playsinline preload="auto"></video>
+    </div>
+    <p class="reward-status" id="rewardUnlockStatus" role="status">Tap play to start the rewarded video.</p>
+    <div class="row" style="margin-top:12px">
+      <button class="btn o" id="rewardUnlockCancel" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- Template Customize & Export Modal (Redesigned Fashionable Canva Pro Studio) -->
 <div class="modal" id="useM">
@@ -7086,15 +7121,15 @@ function sug() {
 function renderCardHTML(t) {
   const activeSub = typeof getActiveUserSubscription === "function" ? getActiveUserSubscription() : null;
   const subUnlocked = !!(activeSub && activeSub.isActive);
-  const lock = false;
+  const lock = t.prem && !subUnlocked && !unlocked.includes(t.id);
   const isWide = t.w > t.h;
   let crownBadge = "";
   const isRec = typeof isTemplateRecommended === "function" && isTemplateRecommended(t.id);
   const recBadge = isRec ? `<div class="rec-flame-badge" title="Most Recommended by Admin">🔥 MOST RECOMMENDED</div>` : "";
   if (t.prem) {
     crownBadge = lock
-      ? `<div class="crown-badge" title="Premium item available to customize">👑 PREMIUM</div>`
-      : `<div class="crown-badge unlocked-pill" title="Premium item available">👑 UNLOCKED ✓</div>`;
+      ? `<div class="crown-badge" title="Watch the rewarded video to unlock">👑 PREMIUM</div>`
+      : `<div class="crown-badge unlocked-pill" title="Premium item unlocked">👑 UNLOCKED ✓</div>`;
   } else {
     crownBadge = `<div class="crown-badge free-pill" title="Free to customize & download">FREE</div>`;
   }
@@ -7110,7 +7145,9 @@ function renderCardHTML(t) {
        <div class="vid-bar"><div></div></div>`
     : "";
 
-  const btnLabel = t.isVideo ? "✨ Customize Video" : "Customize Template";
+  const btnLabel = lock
+    ? "🎁 Watch video to unlock"
+    : (t.isVideo ? "✨ Customize Video" : "Customize Template");
 
   return `<div class="card ${t.prem ? "pr" : ""} ${t.isVideo ? "vid-card" : ""} ${isWide ? "wide" : ""}" data-id="${t.id}" style="cursor:pointer">
     <div class="pv" data-id="${t.id}">
@@ -8746,6 +8783,10 @@ function handleCardContainerClick(e) {
   if (!t) return;
   const activeSub = typeof getActiveUserSubscription === "function" ? getActiveUserSubscription() : null;
   const isSubActive = !!(activeSub && activeSub.isActive);
+  if (t.prem && !isSubActive && !unlocked.includes(t.id)) {
+    openAd(t);
+    return;
+  }
   openUse(t);
 }
 
@@ -8758,7 +8799,7 @@ $("#createdGrid").onclick = handleCardContainerClick;
 $("#bookmarkedGrid").onclick = handleCardContainerClick;
 // Global fallback delegation so clicking any template card or AI button anywhere on the page always works
 document.addEventListener("click", e => {
-  if (e.target.closest("#useM, #gryxcellAiModal, #moreM, #firebaseAuthModal, #adminAppModal")) return;
+  if (e.target.closest("#useM, #gryxcellAiModal, #moreM, #rewardUnlockM, #firebaseAuthModal, #adminAppModal")) return;
   if (e.target.closest("[data-ai], [data-aicr], [data-more], [data-vplay], [data-vsound], [data-editcr], [data-dlcr], [data-delcr], [data-id]")) {
     const inHandledGrid = e.target.closest("#grid, #homeRecommendedGrid, #homeVidGrid, #homeCreationsPreview, #homeTrendingGrid, #createdGrid, #bookmarkedGrid");
     if (!inHandledGrid) handleCardContainerClick(e);
@@ -8816,7 +8857,9 @@ $("#mClose").onclick = () => $("#moreM").classList.remove("show");
 $("#mOpen").onclick = () => {
   $("#moreM").classList.remove("show");
   if (!moreTarget) return;
-  openUse(moreTarget);
+  const moreSub = typeof getActiveUserSubscription === "function" ? getActiveUserSubscription() : null;
+  if (moreTarget.prem && !(moreSub && moreSub.isActive) && !unlocked.includes(moreTarget.id)) openAd(moreTarget);
+  else openUse(moreTarget);
 };
 $("#mFav").onclick = () => {
   if (!moreTarget) return;
@@ -8842,13 +8885,102 @@ $("#mSim").onclick = () => {
   showToast(`Showing all ${cat} templates & videos`);
 };
 
-function openAd(t) {
-  // Legacy call-site compatibility: premium items open directly.
-  if (!t) return;
+let rewardPlayer = null;
+let rewardTarget = null;
+let rewardCompleted = false;
+
+function closeRewardUnlock() {
+  if (rewardPlayer) {
+    try { rewardPlayer.pause(); } catch (e) {}
+  }
+  const modal = $("#rewardUnlockM");
+  if (modal) {
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  rewardTarget = null;
+  rewardCompleted = false;
+}
+
+function refreshAllCardGridsForAdProgress() {
+  if (typeof bar === "function") bar();
+  if (activePage === "explore" && typeof grid === "function") grid();
+  if (activePage === "home") {
+    if (typeof renderHomePage === "function") renderHomePage();
+    if (typeof renderRecommendedOnHome === "function") renderRecommendedOnHome();
+  }
+  if (activePage === "creations" && typeof renderCreationsPage === "function") renderCreationsPage();
+}
+
+function finishRewardedUnlock() {
+  if (rewardCompleted || !rewardTarget) return;
+  rewardCompleted = true;
+  const t = rewardTarget;
   if (!unlocked.includes(t.id)) unlocked.push(t.id);
   save();
+  if (typeof recordUnlockOrPurchase === "function") {
+    recordUnlockOrPurchase(t, "Rewarded video", 1);
+  }
+  closeRewardUnlock();
+  refreshAllCardGridsForAdProgress();
   openUse(t);
+  showToast(`Unlocked Premium ${t.isVideo ? "Video" : "Template"}!`);
 }
+
+function openAd(t) {
+  if (!t) return;
+  rewardTarget = t;
+  rewardCompleted = false;
+  const modal = $("#rewardUnlockM");
+  const status = $("#rewardUnlockStatus");
+  const copy = $("#rewardUnlockCopy");
+  if (copy) copy.textContent = `Watch the partner video to unlock “${t.title}”.`;
+  if (status) status.textContent = "Tap play to start the rewarded video.";
+  if (modal) {
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+  }
+  if (rewardPlayer) {
+    try { rewardPlayer.dispose(); } catch (e) {}
+    rewardPlayer = null;
+  }
+  if (window.videojs) {
+    rewardPlayer = videojs("rewardVideo", {
+      controls: true,
+      autoplay: false,
+      muted: false,
+      preload: "auto",
+      fluid: true
+    });
+    rewardPlayer.ima({
+      adTagUrl: "https://youradexchange.com/video/select.php?r=12451366",
+    });
+    rewardPlayer.on("ads-ad-started", () => {
+      if (status) status.textContent = "Rewarded video is playing…";
+    });
+    rewardPlayer.on("ads-ad-ended", finishRewardedUnlock);
+    rewardPlayer.on("adend", finishRewardedUnlock);
+    rewardPlayer.on("ended", () => {
+      if (rewardPlayer.ima && rewardPlayer.ima.adsActive && rewardPlayer.ima.adsActive()) return;
+      finishRewardedUnlock();
+    });
+    rewardPlayer.on("adserror", () => {
+      if (status) status.textContent = "The rewarded video could not load. Please try again.";
+    });
+    rewardPlayer.on("error", () => {
+      if (status) status.textContent = "The rewarded video could not load. Please try again.";
+    });
+  }
+  if (rewardPlayer) {
+    try {
+      rewardPlayer.ima.requestAds();
+    } catch (e) {
+      if (status) status.textContent = "Tap play to retry the rewarded video.";
+    }
+  }
+}
+
+$("#rewardUnlockCancel").onclick = closeRewardUnlock;
 
 let modalSecTimer = null, modalSecElapsed = 0;
 function currentSvg() {
@@ -9032,7 +9164,9 @@ $("#moreLikeGrid").onclick = e => {
   const sim = T.find(x => x.id == card.dataset.simid);
   if (!sim) return;
   $("#useM").classList.remove("show");
-  openUse(sim);
+  const simSub = typeof getActiveUserSubscription === "function" ? getActiveUserSubscription() : null;
+  if (sim.prem && !(simSub && simSub.isActive) && !unlocked.includes(sim.id)) openAd(sim);
+  else openUse(sim);
 };
 
 $("#scenePillsBar").onclick = e => {
