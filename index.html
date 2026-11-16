@@ -8865,7 +8865,14 @@ $("#mSim").onclick = () => {
 
 function openAd(t) {
   if (!t) return;
-  showToast("Ad-based unlocking is unavailable. Premium items require an active subscription or purchase.");
+  if (typeof window.requestEzmobOutstream !== "function") {
+    showToast("The video ad is still loading. Please try again in a moment.");
+    return;
+  }
+  showToast("Loading a partner video…");
+  window.requestEzmobOutstream(function (hasBid) {
+    if (!hasBid) showToast("No video ad is available right now. Please try again later.");
+  });
 }
 let modalSecTimer = null, modalSecElapsed = 0;
 function currentSvg() {
@@ -11707,18 +11714,23 @@ setTimeout(function(){if(window.__fbReady)return;["submitRegisterBtn","submitLog
 			}]
 		}];
 		pbjs.addAdUnits(adUnits);
-		pbjs.requestBids({
-			bidsBackHandler: function(bidResponses) {
-				process('container-1');
-			}
-		});
+		window.requestEzmobOutstream = function (onResult) {
+			pbjs.requestBids({
+				adUnitCodes: ['container-1'],
+				bidsBackHandler: function () {
+					var hasBid = process('container-1');
+					if (typeof onResult === 'function') onResult(hasBid);
+				}
+			});
+		};
 	});
 
 	function process(adUnit) {
 		var bidResponses = pbjs.getHighestCpmBids(adUnit);
-		if (bidResponses.length == 0) return;
+		if (bidResponses.length == 0) return false;
 		var bid = bidResponses[0];
 		pbjs.renderAd(document, bid.adId);
+		return true;
 	}
 
 	function renderOutstream(bid) {
