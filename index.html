@@ -2272,7 +2272,8 @@ body{
 #firebaseAuthModal input{border-radius:12px;padding:12px 14px;font-size:.95rem}
 #firebaseAuthModal input:focus{outline:0;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
 #firebaseAuthModal .row{margin-top:14px;margin-bottom:22px}
-#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn{background:linear-gradient(135deg,#4f46e5,#7c3aed)!important;color:#fff!important;border:0;border-radius:12px;padding:13px;font-weight:700;flex:1}
+#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn,#submitChangeEmailBtn,#verifyRegOtpBtn,#verifyLoginOtpBtn,#verifyForgotOtpBtn,#verifyChangeEmailOtpBtn{background:linear-gradient(135deg,#4f46e5,#7c3aed)!important;color:#fff!important;border:0;border-radius:12px;padding:13px;font-weight:700;flex:1}
+.otp-code-input{letter-spacing:.32em;font-weight:800!important;font-size:1.15rem!important;text-align:center;font-family:'JetBrains Mono',monospace}
 .pw-meter{height:5px;border-radius:9px;background:var(--line);overflow:hidden;margin:2px 0 6px}.pw-meter i{display:block;height:100%;width:0;border-radius:9px;transition:width .25s,background .25s}
 .am-note{font-size:.76rem;color:var(--muted);margin-bottom:6px;line-height:1.4}
 #firebaseAuthModal .am-head h2,#firebaseAuthModal .am-head p{color:#fff!important}
@@ -2284,7 +2285,7 @@ body{
 .gate-login-pill{background:rgba(255,255,255,.16)!important;color:#fff!important;border:1px solid rgba(255,255,255,.5)!important;border-radius:12px!important;font-weight:700}
 .gate-showcase-card{background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.35)!important;backdrop-filter:blur(14px);border-radius:22px!important}
 #firebaseAuthModal .am-head{background:linear-gradient(135deg,#0ea5e9,#2563eb 60%,#1e40af)!important}
-#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn{background:linear-gradient(135deg,#0ea5e9,#2563eb)!important}
+#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn,#submitChangeEmailBtn,#verifyRegOtpBtn,#verifyLoginOtpBtn,#verifyForgotOtpBtn,#verifyChangeEmailOtpBtn{background:linear-gradient(135deg,#0ea5e9,#2563eb)!important}
 #firebaseAuthModal .auth-tab.on{background:#2563eb!important;color:#fff!important}
 #firebaseAuthModal input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2)}
 #firebaseAuthModal .am-x{background:rgba(255,255,255,.22)}
@@ -2293,7 +2294,7 @@ body{
 .mandatory-gate{background:radial-gradient(1200px 600px at 85% -10%,#c4b5fd 0%,transparent 60%),radial-gradient(900px 500px at -10% 110%,#ec4899 0%,transparent 55%),linear-gradient(160deg,#8b5cf6 0%,#6d28d9 55%,#4c1d95 100%)!important}
 .gate-signup-cta{color:#6d28d9!important}
 #firebaseAuthModal .am-head{background:linear-gradient(135deg,#a78bfa,#7c3aed 55%,#5b21b6)!important}
-#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn{background:linear-gradient(135deg,#8b5cf6,#6d28d9)!important}
+#submitRegisterBtn,#submitLoginBtn,#submitForgotBtn,#submitChangeEmailBtn,#verifyRegOtpBtn,#verifyLoginOtpBtn,#verifyForgotOtpBtn,#verifyChangeEmailOtpBtn{background:linear-gradient(135deg,#8b5cf6,#6d28d9)!important}
 #firebaseAuthModal .auth-tab.on{background:#7c3aed!important;color:#fff!important}
 #firebaseAuthModal input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
 
@@ -2809,6 +2810,182 @@ body.gate-open .bnav,body.gate-open .site-nav,body.gate-open .site-footer,body.g
 .reward-video-wrap .video-js { width: 100%; aspect-ratio: 16 / 9; height: auto; }
 .reward-status { min-height: 1.3em; margin: 10px 0 0; color: var(--muted); font-size: .78rem; font-weight: 700; }
 
+
+/* ===== UPGRADED COMING SOON (COUNTDOWN + TOP 10 GIVEAWAY) & MAINTENANCE GATES ===== */
+.coming-soon-gate, .maintenance-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9990 !important;
+  background:
+    radial-gradient(1000px 540px at 50% 0%, rgba(56, 189, 248, 0.28), transparent 70%),
+    radial-gradient(800px 480px at 85% 90%, rgba(37, 99, 235, 0.32), transparent 65%),
+    linear-gradient(145deg, #040d1a 0%, #0a1e3c 48%, #0f2952 100%);
+  color: #ffffff;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 24px 16px 48px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.coming-soon-gate.show-cs, .maintenance-gate.show-maint {
+  display: flex !important;
+}
+.cs-shell {
+  width: 100%;
+  max-width: 980px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 22px;
+  align-items: stretch;
+  text-align: left;
+}
+@media (max-width: 860px) {
+  .cs-shell { grid-template-columns: 1fr; text-align: center; }
+}
+.cs-hero-panel, .cs-signup-panel {
+  background: rgba(15, 34, 64, 0.78);
+  border: 1.5px solid rgba(56, 189, 248, 0.38);
+  border-radius: 26px;
+  padding: 28px 24px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(2, 8, 23, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.cs-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+.cs-time-box {
+  background: linear-gradient(180deg, rgba(14, 165, 233, 0.22) 0%, rgba(30, 58, 138, 0.42) 100%);
+  border: 1.5px solid rgba(125, 211, 252, 0.45);
+  border-radius: 16px;
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.2);
+}
+.cs-time-box strong {
+  display: block;
+  font-size: clamp(1.45rem, 3.2vw, 2.15rem);
+  font-weight: 800;
+  color: #38bdf8;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.cs-time-box small {
+  display: block;
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #bae6fd;
+  margin-top: 4px;
+}
+.cs-perk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.cs-perk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 14px;
+  padding: 11px 13px;
+  font-size: .83rem;
+  line-height: 1.45;
+  color: #e0f2fe;
+  text-align: left;
+}
+.cs-slots-bar {
+  background: rgba(2, 132, 199, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cs-inp {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(125, 211, 252, 0.35);
+  background: rgba(7, 18, 36, 0.85);
+  color: #ffffff;
+  font-size: .9rem;
+  margin-bottom: 8px;
+}
+.cs-inp:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+}
+.cs-submit-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 13px 18px;
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 55%, #1d4ed8 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: .95rem;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(14, 165, 233, 0.38);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.cs-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(14, 165, 233, 0.52);
+}
+.maint-card {
+  max-width: 580px;
+  width: 100%;
+  margin: auto;
+  background: rgba(15, 34, 64, 0.84);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-radius: 28px;
+  padding: 36px 28px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+  text-align: center;
+}
+.coupon-nav-btn {
+  border: 1.5px solid #38bdf8;
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  color: #0369a1;
+  padding: 7px 13px;
+  border-radius: 99px;
+  font-size: .76rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all .18s ease;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .coupon-nav-btn {
+  background: rgba(14, 165, 233, 0.18);
+  color: #7dd3fc;
+  border-color: #0284c7;
+}
+.coupon-nav-btn:hover {
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 </style>
 </head>
 <body>
@@ -2819,37 +2996,9 @@ body.gate-open .bnav,body.gate-open .site-nav,body.gate-open .site-footer,body.g
     var explicitOut = localStorage.getItem("gryxcell_explicit_logout") === "1";
     var sess = JSON.parse(localStorage.getItem("gryxcell_active_session_v1") || "null");
     var users = JSON.parse(localStorage.getItem("gryxcell_firebase_users_v1") || "{}");
-    var hasFbAuthUser = false;
-    if (!explicitOut) {
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && k.indexOf("firebase:authUser:") === 0) {
-          var fbU = JSON.parse(localStorage.getItem(k) || "null");
-          if (fbU && fbU.email) {
-            hasFbAuthUser = true;
-            if (!sess || !sess.emailVerified) {
-              var uName = (fbU.displayName || fbU.email.split("@")[0] || "user").toLowerCase().replace(/^@+/, "");
-              sess = { username: uName, email: fbU.email, emailVerified: true };
-              localStorage.setItem("gryxcell_active_session_v1", JSON.stringify(sess));
-            }
-            break;
-          }
-        }
-      }
-      if (!sess) {
-        var uKeys = Object.keys(users);
-        for (var j = 0; j < uKeys.length; j++) {
-          var u = users[uKeys[j]];
-          if (u && u.emailVerified && !u.banned) {
-            sess = { username: u.username || uKeys[j], email: u.email, emailVerified: true };
-            localStorage.setItem("gryxcell_active_session_v1", JSON.stringify(sess));
-            break;
-          }
-        }
-      }
-    }
     var isBanned = sess && sess.username && users[sess.username] && users[sess.username].banned;
-    var isVerified = !explicitOut && (!!(sess && sess.emailVerified && !isBanned) || hasFbAuthUser);
+    var isUserVerifiedInReg = sess && sess.username && users[sess.username] ? !!users[sess.username].emailVerified : true;
+    var isVerified = !explicitOut && !!(sess && sess.emailVerified && sess.otpVerified !== false && isUserVerifiedInReg && !isBanned);
     window.__instantLoggedIn = isVerified;
     window.__instantSess = isBanned ? null : sess;
     if (!isVerified) {
@@ -2859,27 +3008,183 @@ body.gate-open .bnav,body.gate-open .site-nav,body.gate-open .site-footer,body.g
 })();
 </script>
 
-<!-- 1. COMING SOON LOCK SCREEN (Controlled by Admin App 'Coming Soon' / 'Activate' Buttons) -->
+<!-- 1A. MAINTENANCE MODE LOCK SCREEN (Controlled by Admin App Maintenance Toggle) -->
+<div class="maintenance-gate" id="maintenanceGate">
+  <div class="maint-card">
+    <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 15px;border-radius:99px;background:rgba(56,189,248,0.18);border:1px solid #38bdf8;color:#7dd3fc;font-size:.76rem;font-weight:800;margin-bottom:16px">
+      🛠️ SCHEDULED STUDIO MAINTENANCE IN PROGRESS
+    </div>
+    <div style="width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,#0ea5e9,#2563eb);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 14px;box-shadow:0 12px 28px rgba(14,165,233,0.4)">
+      ⚙️
+    </div>
+    <h1 style="margin:0 0 10px;font-size:clamp(1.65rem,4vw,2.25rem);font-weight:800;color:#ffffff">We Are Upgrading Templates Studio</h1>
+    <p id="maintCustomMessageTxt" style="margin:0 auto 20px;color:#bae6fd;font-size:.94rem;line-height:1.55;max-width:460px">
+      Our team is currently performing live updates and adding new luxury templates and HD videos. The website will be back online shortly!
+    </p>
+    <div style="background:rgba(7,18,36,0.75);border:1px solid rgba(125,211,252,0.3);border-radius:16px;padding:14px 16px;font-size:.82rem;color:#e0f2fe;margin-bottom:16px">
+      🔄 <strong>Auto-Refresh Active:</strong> This page will automatically unlock the moment the Administrator turns off Maintenance Mode.
+    </div>
+    <button class="gate-admin-pill" id="maintOpenAdminBtn" type="button">🛡️ Admin Control</button>
+  </div>
+</div>
+
+<!-- 1B. COMING SOON LOCK SCREEN + AUTO-LIVE TIMER + TOP 10 SIGN-UP FREE COUPON GIVEAWAY -->
 <div class="coming-soon-gate" id="comingSoonGate">
 <script>
 try {
   var _csCfg = JSON.parse(localStorage.getItem("templates_site_config_v1") || "null");
   if (_csCfg && _csCfg.siteStatus === "coming_soon") {
-    document.getElementById("comingSoonGate").classList.add("show-cs");
-    document.title = "Templates – Coming Soon";
+    if (_csCfg.comingSoonEndTime && Date.now() >= Number(_csCfg.comingSoonEndTime)) {
+      _csCfg.siteStatus = "active";
+      _csCfg.comingSoonEndTime = null;
+      localStorage.setItem("templates_site_config_v1", JSON.stringify(_csCfg));
+    } else {
+      document.getElementById("comingSoonGate").classList.add("show-cs");
+      document.title = "Templates – Coming Soon & Top 10 Coupon Giveaway";
+    }
+  } else if (_csCfg && _csCfg.siteStatus === "maintenance") {
+    document.getElementById("maintenanceGate").classList.add("show-maint");
+    document.title = "Templates – Under Maintenance";
   }
 } catch (e) {}
 </script>
-  <div class="cs-box">
-    <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#fde047;font-size:.76rem;font-weight:800;margin-bottom:14px">
-      🚧 SITE STATUS: COMING SOON
+  <div class="cs-shell">
+    <!-- Left Column: Live Countdown Timer & Exciting Giveaway Perks -->
+    <div class="cs-hero-panel">
+      <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;background:rgba(56,189,248,0.2);border:1px solid #38bdf8;color:#7dd3fc;font-size:.75rem;font-weight:800;margin-bottom:12px">
+        🚀 GRAND LAUNCH COUNTDOWN · AUTO-GO-LIVE TIMER
+      </div>
+      <div class="gate-script-logo" style="font-size:2.5rem;margin-bottom:4px">Templates Studio</div>
+      <h1 style="margin:0 0 10px;font-size:clamp(1.6rem,3.6vw,2.35rem);font-weight:800;line-height:1.15;color:#ffffff">
+        Something Extraordinary Is Going Live Soon!
+      </h1>
+      <p style="margin:0 0 14px;color:#bae6fd;font-size:.9rem;line-height:1.5">
+        Our next-generation studio of <strong>240+ couture templates</strong> and <strong>56+ multi-scene 1080p HD videos</strong> is preparing to launch. When the timer reaches zero, the website activates automatically!
+      </p>
+
+      <!-- Live Countdown Boxes -->
+      <div class="cs-countdown-grid" id="csCountdownGrid">
+        <div class="cs-time-box">
+          <strong id="csDaysVal">00</strong>
+          <small>Days</small>
+        </div>
+        <div class="cs-time-box">
+          <strong id="csHoursVal">00</strong>
+          <small>Hours</small>
+        </div>
+        <div class="cs-time-box">
+          <strong id="csMinsVal">00</strong>
+          <small>Minutes</small>
+        </div>
+        <div class="cs-time-box">
+          <strong id="csSecsVal">00</strong>
+          <small>Seconds</small>
+        </div>
+      </div>
+      <div id="csTimerStatusNote" style="font-size:.78rem;color:#7dd3fc;font-weight:700;margin-bottom:14px;text-align:center">
+        ⏳ Live launch timer synced with Admin Control Center
+      </div>
+
+      <!-- Exciting Top 10 Coupon Perks -->
+      <div class="cs-perk-list">
+        <div class="cs-perk-item">
+          <span style="font-size:1.3rem">🏆</span>
+          <div>
+            <strong style="color:#fde047">Top 10 Early Sign-Ups Get a FREE VIP Coupon Code!</strong><br>
+            Be among the first 10 people to register on this Coming Soon page and receive an exclusive Admin Coupon Code to unlock Premium Templates or Videos with <strong>ZERO Ads</strong>!
+          </div>
+        </div>
+        <div class="cs-perk-item">
+          <span style="font-size:1.3rem">🎨</span>
+          <div>
+            <strong style="color:#38bdf8">Template Coupon Code = 2 Free Premium Templates of Your Choice!</strong><br>
+            Apply your Template Coupon once on any Premium Template to unlock it free without ads, and apply it a <strong>2nd time</strong> on another Premium Template of your choice!
+          </div>
+        </div>
+        <div class="cs-perk-item">
+          <span style="font-size:1.3rem">🎬</span>
+          <div>
+            <strong style="color:#38bdf8">Video Coupon Code = 1 Free 60s HD Premium Video of Your Choice!</strong><br>
+            Unlock any 10-chapter 1080p HD Premium Video immediately without watching the 5 video ads!
+          </div>
+        </div>
+      </div>
+      <button class="gate-admin-pill" id="csOpenAdminBtn" type="button" style="margin-top:14px">🛡️ Open Admin App</button>
     </div>
-    <div class="gate-script-logo" style="font-size:2.8rem;margin-bottom:6px">Templates</div>
-    <h1 style="margin:0 0 10px;font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800">Something Extraordinary Is Coming Soon</h1>
-    <p style="margin:0 auto 20px;color:rgba(255,255,255,0.82);font-size:.94rem;line-height:1.5">
-      Our visual suite of 240+ custom templates and 56+ multi-scene HD videos powered by <strong>Gryxcell AI</strong> is currently locked by the administrator in <strong>Coming Soon</strong> mode. Please check back once the site is activated!
-    </p>
-    <button class="gate-admin-pill" id="csOpenAdminBtn" type="button">🛡️ Open Admin App to Activate Site</button>
+
+    <!-- Right Column: Top 10 Early Sign-Up Registration Form (Email ID + Unique Username + Password) -->
+    <div class="cs-signup-panel">
+      <div class="cs-slots-bar">
+        <span style="font-size:.78rem;font-weight:800;color:#fde047">🎁 TOP 10 FREE COUPON GIVEAWAY</span>
+        <span id="csTop10SpotsBadge" style="font-size:.74rem;font-weight:800;background:#0284c7;color:#fff;padding:3px 10px;border-radius:99px">
+          10 of 10 Top Spots Left!
+        </span>
+      </div>
+      <h2 style="margin:0 0 6px;font-size:1.32rem;font-weight:800;color:#ffffff">
+        Claim Your Early Sign-Up Spot &amp; Free Coupon
+      </h2>
+      <p style="margin:0 0 14px;font-size:.82rem;color:#bae6fd;line-height:1.45">
+        Register your account below with your <strong>Email ID</strong>, a <strong>Unique @Username</strong>, and your <strong>Password</strong>. Top 10 sign-ups are prioritized in the Admin Panel for free no-ad coupon codes!
+      </p>
+
+      <div id="csSignupStatusBanner" class="auth-status-banner" style="margin-bottom:12px"></div>
+
+      <div>
+        <label class="field-lbl" for="csRegEmail" style="color:#bae6fd">1. Your Email ID</label>
+        <input class="cs-inp" id="csRegEmail" type="email" placeholder="yourname@example.com" autocomplete="email">
+
+        <label class="field-lbl" for="csRegUsername" style="color:#bae6fd">2. Create Unique @Username (For Everyone)</label>
+        <input class="cs-inp" id="csRegUsername" type="text" placeholder="e.g. aarav_designs" autocomplete="off">
+        <div id="csUnameCheckTxt" style="font-size:.73rem;font-weight:700;color:#93c5fd;margin:-2px 0 8px;min-height:16px">
+          Must be unique (3–24 letters, numbers, or underscores).
+        </div>
+
+        <label class="field-lbl" for="csRegPassword" style="color:#bae6fd">3. Set Account Password</label>
+        <div style="display:flex;gap:6px;margin-bottom:10px">
+          <input class="cs-inp" id="csRegPassword" type="password" placeholder="At least 6 characters" autocomplete="new-password" style="margin:0;flex:1">
+          <button class="copy-mini" id="csTogglePassBtn" type="button" style="background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(125,211,252,0.35);padding:0 12px">👁️</button>
+        </div>
+
+        <button class="cs-submit-btn" id="csSubmitSignupBtn" type="button">
+          📨 Send 6-Digit OTP &amp; Reserve Top 10 Free Coupon Spot
+        </button>
+
+        <!-- Mandatory 6-Digit OTP Verification Box for Coming Soon Sign-Up -->
+        <div id="csOtpVerifyBox" style="display:none;margin-top:12px;background:rgba(14,165,233,0.14);border:1.5px solid #38bdf8;border-radius:16px;padding:14px;text-align:left">
+          <div style="font-size:.78rem;font-weight:800;color:#7dd3fc;margin-bottom:4px">
+            🔢 VERIFY 6-DIGIT EMAIL OTP TO COMPLETE SIGN-UP
+          </div>
+          <p id="csOtpPromptTxt" style="margin:0 0 8px;font-size:.78rem;color:#e0f2fe;line-height:1.45">
+            Enter the 6-digit OTP sent to your email address (or dispatched by Admin if you had trouble receiving mail). You can only proceed once your OTP is verified:
+          </p>
+          <input class="cs-inp otp-code-input" id="csOtpInput" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code" style="margin-bottom:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="cs-submit-btn" id="csVerifyOtpBtn" type="button" style="flex:1;padding:10px 14px;font-size:.82rem">
+              ✅ Verify OTP &amp; Confirm Spot
+            </button>
+            <button class="copy-mini" id="csResendOtpBtn" type="button" style="background:rgba(255,255,255,0.14);color:#fff;border-color:rgba(125,211,252,0.4);padding:8px 12px">
+              📨 Resend OTP
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned Coupon / Sign-Up Confirmation Box -->
+      <div id="csSignupRewardBox" style="display:none;margin-top:14px;background:rgba(16,185,129,0.16);border:1.5px solid #10b981;border-radius:16px;padding:14px;text-align:left">
+        <div style="font-size:.76rem;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px" id="csRewardRankBadge">
+          🎉 REGISTERED · EARLY SIGN-UP SPOT CONFIRMED
+        </div>
+        <div id="csRewardDetailsTxt" style="font-size:.82rem;color:#ffffff;line-height:1.48"></div>
+      </div>
+
+      <!-- Check Existing Early Sign-Up / Assigned Coupon Status -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(125,211,252,0.22);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <span style="font-size:.75rem;color:#93c5fd">Already signed up on Coming Soon?</span>
+        <button class="copy-mini" id="csCheckAssignedCouponBtn" type="button" style="background:rgba(14,165,233,0.2);color:#7dd3fc;border-color:#38bdf8">
+          🎟️ Check My Assigned Coupon Code
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2947,6 +3252,9 @@ if (window.__instantLoggedIn) {
     <div class="nav-links" hidden></div>
 
     <div class="nav-actions">
+      <button class="coupon-nav-btn" id="openCouponWalletBtn" type="button" title="View or Apply a Coupon Code for Free Premium Templates & Videos">
+        <span>🎟️</span> <span>Coupon Code</span>
+      </button>
       <button class="nav-ai-btn" id="openGryxcellHubBtn" type="button" title="Open Gryxcell AI">
         <span>✨</span> <span id="navAiBrandLbl">Gryxcell AI</span>
       </button>
@@ -2955,10 +3263,11 @@ if (window.__instantLoggedIn) {
         <button class="nav-auth-btn primary" id="openRegisterBtn" type="button">Create account</button>
       </div>
       <div class="nav-auth-wrap" id="navLoggedInPill" style="display:none">
-        <span class="nav-user-pill" id="navUserBadge" title="Verified account">
+        <span class="nav-user-pill" id="navUserBadge" title="OTP Verified account">
           <span class="u-dot"></span>
           <span id="navUsernameTxt">@user</span>
         </span>
+        <button class="nav-auth-btn" id="navChangeEmailBtn" type="button" title="Change your registered email with 6-digit OTP verification">✉️ Change Email</button>
         <button class="nav-auth-btn" id="navLogoutBtn" type="button" title="Sign out of your account">Logout</button>
       </div>
       <button class="nav-auth-btn" id="openAdminPortalBtn" type="button" title="Open Admin App Dashboard">🛡️ Admin App</button>
@@ -3520,58 +3829,66 @@ if (window.__instantLoggedIn && window.__instantSess) {
   </div>
 </div>
 
-<!-- FIREBASE AUTHENTICATION MODAL (REGISTER WITH UNIQUE USERNAME + EMAIL LINK, LOGIN, FORGOT PASSWORD) -->
+<!-- SUPABASE AUTHENTICATION MODAL (STRICT 6-DIGIT EMAIL OTP FOR SIGN-UP, LOGIN, FORGOT PASSWORD & CHANGE EMAIL) -->
 <div class="modal" id="firebaseAuthModal">
   <div class="box auth-modal-box">
     <div class="am-head">
       <button class="am-x" id="authModalCloseTop" type="button" aria-label="Close">&#10005;</button>
       <div class="am-logo">T</div>
-      <h2>Welcome to Templates</h2>
-      <p>Create an account to unlock 240+ templates and 56+ videos</p>
+      <h2 id="authModalHeadTitle">Welcome to Templates</h2>
+      <p id="authModalHeadSub">6-Digit Email OTP Verified Access · 240+ Templates &amp; 56+ Videos</p>
     </div>
-    <div class="auth-tabs" id="authTabsBar">
+    <div class="auth-tabs" id="authTabsBar" style="flex-wrap:wrap">
       <button class="auth-tab on" data-authtab="login" id="tabBtnLogin" type="button">Log in</button>
-      <button class="auth-tab" data-authtab="register" id="tabBtnRegister" type="button">Create account</button>
+      <button class="auth-tab" data-authtab="register" id="tabBtnRegister" type="button">Sign up</button>
       <button class="auth-tab" data-authtab="forgot" id="tabBtnForgot" type="button">Forgot password</button>
+      <button class="auth-tab" data-authtab="changeemail" id="tabBtnChangeEmail" type="button">Change email</button>
     </div>
 
     <div class="auth-status-banner" id="authStatusBanner"></div>
 
-    <!-- 1. LOGIN VIEW (Username OR Email + Password OR Instant Email Login Link) -->
+    <!-- 1. LOGIN VIEW (Username OR Email + Password OR 6-Digit Email OTP) -->
     <div id="authViewLogin">
       <label class="field-lbl" for="loginIdentifier">Username or Email ID</label>
       <input id="loginIdentifier" placeholder="Enter your unique @username or email@example.com" autocomplete="username">
-      <label class="field-lbl" for="loginPassword">Password <small style="font-weight:500;color:var(--muted)">(or click Send Login Link below)</small></label>
+      <label class="field-lbl" for="loginPassword">Password <small style="font-weight:500;color:var(--muted)">(or use 6-Digit Login OTP below)</small></label>
       <div style="display:flex;gap:6px;margin-bottom:6px">
         <input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password" style="margin:0;flex:1">
         <button class="copy-mini" id="toggleLoginPassBtn" type="button">👁️</button>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px;flex-wrap:wrap;gap:6px">
-        <button class="copy-mini" id="sendLoginLinkBtn" type="button" style="border:0;background:none;color:#7c3aed;padding:0;font-weight:800;text-decoration:underline;cursor:pointer">📨 Send Login Link to Email</button>
-        <button class="copy-mini" id="gotoForgotFromLoginBtn" type="button" style="border:0;background:none;color:var(--accent);padding:0;text-decoration:underline;cursor:pointer">Forgot Password?</button>
+        <button class="copy-mini" id="sendLoginLinkBtn" type="button" style="border:0;background:none;color:#7c3aed;padding:0;font-weight:800;text-decoration:underline;cursor:pointer">🔢 Send 6-Digit Login OTP to Email</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="copy-mini" id="gotoForgotFromLoginBtn" type="button" style="border:0;background:none;color:var(--accent);padding:0;text-decoration:underline;cursor:pointer">Forgot Password?</button>
+          <button class="copy-mini" id="gotoChangeEmailFromLoginBtn" type="button" style="border:0;background:none;color:var(--muted);padding:0;text-decoration:underline;cursor:pointer">Change Email?</button>
+        </div>
       </div>
       <div class="row" style="margin-bottom:12px">
-        <button class="btn" id="submitLoginBtn" type="button">🔐 Sign In / Send Login Link</button>
+        <button class="btn" id="submitLoginBtn" type="button">🔐 Sign In</button>
         <button class="btn o" id="authCloseBtn1" type="button">Cancel</button>
       </div>
 
-      <!-- Login Email Link Box (Shown when Login Link is sent or verification is needed) -->
+      <!-- Login 6-Digit OTP Verification Box (No Link Bypass) -->
       <div class="verify-gate-card" id="loginLinkGateBox" style="display:none;margin-bottom:18px">
-        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">📬 Login Link Sent to Your Email!</h4>
+        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">🔢 Enter 6-Digit Login OTP</h4>
         <p id="loginLinkGateDesc" style="margin:0 0 10px;font-size:.78rem;color:var(--text)">
-          We sent a sign-in link to your email address (check Primary &amp; Spam/Promotions folders), or click the instant login link below:
+          We sent a 6-digit Login OTP to your email address (or Admin can dispatch it if you had trouble receiving mail). Enter the exact 6-digit OTP below to sign in:
         </p>
+        <input id="loginOtpInput" class="otp-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code" style="margin-bottom:8px">
         <div style="display:flex;flex-direction:column;gap:7px">
-          <a id="directLoginMagicLink" href="#" style="display:block;text-align:center;padding:9px 12px;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:800;font-size:.8rem;text-decoration:none">
-            🔗 Click Here — Instant Login Link (Open &amp; Sign In)
-          </a>
-          <button class="btn o" id="resendLoginLinkBtn" type="button" style="margin:0;font-size:.78rem">📨 Resend Login Link to Email</button>
+          <button class="btn" id="verifyLoginOtpBtn" type="button" style="margin:0">
+            ✅ Verify 6-Digit OTP &amp; Sign In
+          </button>
+          <button class="btn o" id="resendLoginLinkBtn" type="button" style="margin:0;font-size:.78rem">📨 Resend 6-Digit Login OTP</button>
         </div>
       </div>
     </div>
 
-    <!-- 2. REGISTER VIEW (Unique Username + Email ID + Password + Mandatory Email Link Verification) -->
+    <!-- 2. REGISTER VIEW (Unique Username + Email ID + Password + Mandatory 6-Digit OTP Verification Only) -->
     <div id="authViewRegister" style="display:none">
+      <div style="background:rgba(14,165,233,0.1);border:1px solid rgba(56,189,248,0.4);border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:.76rem;color:var(--text)">
+        ✨ <strong>Create Your Templates Account (Sign-Up Template):</strong> We will send your <strong>6-digit Sign-Up Verification OTP</strong> to your email.
+      </div>
       <label class="field-lbl" for="regUsername">Username</label>
       <input id="regUsername" placeholder="e.g. aarav_creations" autocomplete="off">
       <div class="uname-status" id="usernameStatusBadge" style="color:var(--muted)">Letters, numbers and underscore. Must be unique.</div>
@@ -3586,46 +3903,109 @@ if (window.__instantLoggedIn && window.__instantSess) {
       </div>
 
       <div class="pw-meter"><i id="pwBar"></i></div><div class="am-note" id="pwHint">Use 6+ characters. Mix letters, numbers and symbols for a stronger password.</div>
-      <div class="am-note">We will email you a verification link. Click it to finish creating your account.</div>
+      <div class="am-note">We will send a 6-digit OTP to your email. You can only proceed after entering and verifying the 6-digit OTP in the box.</div>
 
       <div class="row">
-        <button class="btn g" id="submitRegisterBtn" type="button">Create account</button>
+        <button class="btn g" id="submitRegisterBtn" type="button">📨 Send Sign-Up OTP</button>
         <button class="btn o" id="authCloseBtn2" type="button">Cancel</button>
       </div>
 
-      <!-- Pending Email Verification Link Gate -->
+      <!-- Pending Sign-Up 6-Digit OTP Gate (Confirm & Proceed Link Options Strictly Removed) -->
       <div class="verify-gate-card" id="verifyEmailGateBox" style="display:none;margin-bottom:18px">
-        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">📬 Registration Link Ready &amp; Sent!</h4>
+        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">🔢 Verify 6-Digit Sign-Up OTP</h4>
         <p id="verifyGateDesc" style="margin:0 0 10px;font-size:.78rem;color:var(--text)">
-          We dispatched a verification link to your email (please check your Inbox and <strong>Spam / Junk</strong> folder), or click your direct Registration Link below:
+          We sent a 6-digit verification OTP to your email (check Inbox &amp; Spam, or ask Admin to dispatch OTP if you have a problem). Enter the exact 6-digit OTP below to complete sign-up:
         </p>
+        <label class="field-lbl" for="regOtpInput" style="margin-top:4px">6-Digit Verification OTP</label>
+        <input id="regOtpInput" class="otp-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code" style="margin-bottom:8px">
         <div style="display:flex;flex-direction:column;gap:7px">
-          <button class="btn" id="simulateEmailLinkClickBtn" type="button" style="margin:0;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:800">
-            🔗 Click Registration Link Now — Complete Sign-Up &amp; Login
+          <button class="btn" id="verifyRegOtpBtn" type="button" style="margin:0">
+            ✅ Verify 6-Digit OTP &amp; Proceed
           </button>
-          <button class="btn" id="checkEmailVerifiedBtn" type="button" style="margin:0">✅ I Clicked the Link in My Email Inbox</button>
-          <button class="btn o" id="resendVerifyLinkBtn" type="button" style="margin:0">📨 Resend Registration Link to Email</button>
+          <button class="btn o" id="resendVerifyLinkBtn" type="button" style="margin:0">📨 Resend 6-Digit Sign-Up OTP</button>
         </div>
       </div>
     </div>
 
-    <!-- 3. FORGOT PASSWORD VIEW (Send Reset Link to Registered Email) -->
+    <!-- 3. FORGOT PASSWORD VIEW (Send 6-Digit Reset OTP & Verify OTP to Set New Password) -->
     <div id="authViewForgot" style="display:none">
       <p style="margin:0 0 10px;font-size:.8rem;color:var(--muted)">
-        Enter your registered <strong>Email ID</strong> (or your unique <strong>Username</strong>) below. We will send a password reset link directly to your registered email address.
+        Enter your registered <strong>Email ID</strong> (or unique <strong>@Username</strong>). We will send a <strong>6-digit Password Reset OTP</strong> to your email. You must verify the OTP before resetting your password.
       </p>
       <label class="field-lbl" for="forgotIdentifier">Registered Email ID or Username</label>
       <input id="forgotIdentifier" placeholder="Enter registered email@example.com or @username">
       <div class="row" style="margin-top:8px">
-        <button class="btn" id="submitForgotBtn" type="button">📨 Send Password Reset Link</button>
+        <button class="btn" id="submitForgotBtn" type="button">📨 Send 6-Digit Reset OTP</button>
         <button class="btn o" id="backToLoginBtn" type="button">← Back to Login</button>
+      </div>
+
+      <!-- Forgot Password 6-Digit OTP + New Password Verification Box -->
+      <div class="verify-gate-card" id="forgotOtpGateBox" style="display:none;margin-bottom:18px">
+        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">🔢 Enter 6-Digit Reset OTP &amp; New Password</h4>
+        <p id="forgotOtpGateDesc" style="margin:0 0 10px;font-size:.78rem;color:var(--text)">
+          Enter the 6-digit OTP sent to your registered email (or sent by Admin) and choose your new password:
+        </p>
+        <label class="field-lbl" for="forgotOtpInput" style="margin-top:4px">1. 6-Digit Reset OTP</label>
+        <input id="forgotOtpInput" class="otp-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code">
+
+        <label class="field-lbl" for="forgotNewPassword">2. New Password (6+ characters)</label>
+        <div style="display:flex;gap:6px;margin-bottom:10px">
+          <input id="forgotNewPassword" type="password" placeholder="Enter new password (6+ chars)" autocomplete="new-password" style="margin:0;flex:1">
+          <button class="copy-mini" id="toggleForgotPassBtn" type="button">👁️</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn" id="verifyForgotOtpBtn" type="button" style="margin:0">
+            🔑 Verify OTP &amp; Reset Password
+          </button>
+          <button class="btn o" id="resendForgotOtpBtn" type="button" style="margin:0">📨 Resend 6-Digit Reset OTP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. CHANGE EMAIL VIEW (Verify 6-Digit OTP to Change Registered Email ID) -->
+    <div id="authViewChangeEmail" style="display:none">
+      <p style="margin:0 0 10px;font-size:.8rem;color:var(--muted)">
+        Change your registered Email ID securely using a <strong>6-digit verification OTP</strong>. Enter your current account details and your new email address below.
+      </p>
+      <label class="field-lbl" for="changeEmailIdentifier">Current @Username or Current Email ID</label>
+      <input id="changeEmailIdentifier" placeholder="Enter your @username or current email@example.com">
+
+      <label class="field-lbl" for="changeEmailPassword">Current Password</label>
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input id="changeEmailPassword" type="password" placeholder="Enter your current password" autocomplete="current-password" style="margin:0;flex:1">
+        <button class="copy-mini" id="toggleChangeEmailPassBtn" type="button">👁️</button>
+      </div>
+
+      <label class="field-lbl" for="changeEmailNewInput">New Email Address</label>
+      <input id="changeEmailNewInput" type="email" placeholder="newemail@example.com" autocomplete="email">
+
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="submitChangeEmailBtn" type="button">📨 Send 6-Digit OTP to New Email</button>
+        <button class="btn o" id="backToLoginFromChangeEmailBtn" type="button">← Back</button>
+      </div>
+
+      <!-- Change Email 6-Digit OTP Verification Box -->
+      <div class="verify-gate-card" id="changeEmailOtpGateBox" style="display:none;margin-bottom:18px">
+        <h4 style="margin:0 0 4px;font-size:.88rem;color:var(--text)">🔢 Verify 6-Digit Change Email OTP</h4>
+        <p id="changeEmailOtpGateDesc" style="margin:0 0 10px;font-size:.78rem;color:var(--text)">
+          Enter the 6-digit OTP sent to your email (or dispatched by Admin) to verify and update your email address:
+        </p>
+        <label class="field-lbl" for="changeEmailOtpInput" style="margin-top:4px">6-Digit Verification OTP</label>
+        <input id="changeEmailOtpInput" class="otp-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code" style="margin-bottom:8px">
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn" id="verifyChangeEmailOtpBtn" type="button" style="margin:0">
+            ✅ Verify 6-Digit OTP &amp; Change Email
+          </button>
+          <button class="btn o" id="resendChangeEmailOtpBtn" type="button" style="margin:0">📨 Resend 6-Digit OTP</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- SEPARATE ADMIN APP PORTAL (LIVE SYNCED WITH FIREBASE & STANDALONE ADMIN APP) -->
+<!-- SEPARATE ADMIN APP PORTAL (LIVE SYNCED WITH SUPABASE & STANDALONE ADMIN APP) -->
 <div class="admin-portal-modal" id="adminAppModal">
   <div class="admin-shell">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1.5px solid var(--line);padding-bottom:14px;margin-bottom:16px">
@@ -3681,21 +4061,32 @@ if (window.__instantLoggedIn && window.__instantSess) {
         <button class="copy-mini" id="admClearUserSearchBtn" type="button">Clear Search</button>
       </div>
 
-      <!-- Account Recovery & Violation Ban Quick Action Box -->
+      <!-- Account Recovery, 6-Digit OTP Mail Dispatch & Violation Ban Quick Action Box -->
       <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px">
-        <h4 style="margin:0 0 8px;font-size:.86rem">🔑 Account Recovery (Change Email &amp; Password) &amp; Violation Ban Tool</h4>
-        <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:8px">
+        <h4 style="margin:0 0 8px;font-size:.86rem">🔑 Account Recovery, Change Email/Password &amp; 6-Digit OTP Mail Dispatcher (If Customer Has Problem)</h4>
+        <div id="admOtpDispatchBanner" class="auth-status-banner" style="margin-bottom:10px"></div>
+        <div class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-bottom:8px">
           <div>
             <label class="field-lbl" for="admRecUsername">Target @Username</label>
             <input id="admRecUsername" placeholder="e.g. aarav_sharma" style="margin:0">
           </div>
           <div>
-            <label class="field-lbl" for="admRecNewEmail">New Email ID (Recovery)</label>
-            <input id="admRecNewEmail" type="email" placeholder="newemail@example.com" style="margin:0">
+            <label class="field-lbl" for="admRecNewEmail">Target / New Email ID</label>
+            <input id="admRecNewEmail" type="email" placeholder="customer@example.com" style="margin:0">
           </div>
           <div>
-            <label class="field-lbl" for="admRecNewPass">New Password (Recovery)</label>
+            <label class="field-lbl" for="admRecNewPass">New Password (Optional)</label>
             <input id="admRecNewPass" type="text" placeholder="Enter new password" style="margin:0">
+          </div>
+          <div>
+            <label class="field-lbl" for="admRecOtpPurpose">OTP Purpose</label>
+            <select id="admRecOtpPurpose" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);margin:0">
+              <option value="signup" selected>Sign-Up Verification OTP (Sign-Up Template)</option>
+              <option value="reset_password">Forgot / Reset Password OTP (Password Reset Template)</option>
+              <option value="change_email">Change Email Verification OTP (Change Email Template)</option>
+              <option value="login">Login Verification OTP (Login Template)</option>
+              <option value="all">All Flows (Universal 6-Digit Support OTP)</option>
+            </select>
           </div>
           <div>
             <label class="field-lbl" for="admBanReason">Violation Reason (If Banning)</label>
@@ -3703,6 +4094,7 @@ if (window.__instantLoggedIn && window.__instantSess) {
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="admSendOtpToMailBtn" type="button" style="margin:0;background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff">📨 Send 6-Digit OTP to Customer Mail</button>
           <button class="btn" id="admApplyRecoveryBtn" type="button" style="margin:0">🔑 Recover Account (Update Email &amp; Password)</button>
           <button class="btn g" id="admBanByUnameBtn" type="button" style="margin:0;background:#dc2626;color:#fff">🚫 Ban @Username</button>
           <button class="btn o" id="admUnbanByUnameBtn" type="button" style="margin:0">✅ Unban @Username</button>
@@ -3716,7 +4108,7 @@ if (window.__instantLoggedIn && window.__instantSess) {
               <th>@Username</th>
               <th>Email ID</th>
               <th>Password</th>
-              <th>Status</th>
+              <th>Status &amp; Active OTP</th>
               <th>Ads Watched</th>
               <th>Admin Actions</th>
             </tr>
@@ -8886,94 +9278,551 @@ $("#mSim").onclick = () => {
   showToast(`Showing all ${cat} templates & videos`);
 };
 
+// ============================================================================
+// 30 COUPON CODES ENGINE (15 TEMPLATE COUPONS = 2 FREE UNLOCKS EACH;
+// 15 VIDEO COUPONS = 1 FREE UNLOCK EACH) + LIVE AD-UNLOCK FIX
+// ============================================================================
+const COUPONS_STORAGE_KEY = "templates_coupons_v2";
+const CS_SIGNUPS_STORAGE_KEY = "templates_coming_soon_signups_v1";
+
+const DEFAULT_30_COUPONS = [
+  // 15 Distinct Template Coupon Codes — Each grants 2 Free Premium Template Unlocks of user's choice without watching ads!
+  { code: "ROYAL-KREVA-84X",   type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "SAPPHIRE-ART-29Q",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "VELVET-CROWN-73M",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "LOTUS-GOLD-51K",    type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "AURA-STUDIO-96P",   type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "PEACOCK-ZARI-48W",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "ZENITH-CARD-62R",   type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "ORCHID-SILK-37N",   type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "PALACE-CREST-85T",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "MARIGOLD-PRO-19V",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "EMERALD-FOIL-64J",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "CELESTIAL-INK-92D", type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "STARLIGHT-HUB-41B", type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "HERITAGE-LUX-78H",  type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  { code: "DIAMOND-VOW-53Z",   type: "template", enabled: true, maxUses: 2, usesLeft: 2, usedCount: 0, assignedTo: "", unlockedItems: [], label: "2x Free Premium Templates" },
+  // 15 Distinct Video Coupon Codes — Each grants 1 Free Premium Video Unlock of user's choice without watching ads!
+  { code: "CINEMA-REEL-67Y",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "MOTION-GALA-34L",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "SHUBH-UTSAV-89C",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "SPARKLE-FX-52F",    type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "JUBILEE-HD-71S",    type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "GRAND-SCENE-26G",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "ROYAL-MANDAP-94V",  type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "FESTIVE-GLOW-43K",  type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "NOIR-FRAME-81P",    type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "SOLARIS-CLIP-18W",  type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "PRISM-STAGE-65M",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "CHANDELIER-49R",    type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "SYMPHONY-PRO-77X",  type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "VOGUE-STORY-38T",   type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" },
+  { code: "HORIZON-4K-95N",    type: "video", enabled: true, maxUses: 1, usesLeft: 1, usedCount: 0, assignedTo: "", unlockedItems: [], label: "1x Free Premium Video" }
+];
+
+function loadCouponsRegistry() {
+  try {
+    localStorage.removeItem("templates_coupons_v1");
+    const raw = JSON.parse(localStorage.getItem(COUPONS_STORAGE_KEY) || "null");
+    if (Array.isArray(raw) && raw.length > 0) {
+      const byCode = {};
+      raw.forEach(c => { if (c && c.code) byCode[c.code.toUpperCase()] = c; });
+      return DEFAULT_30_COUPONS.map(def => {
+        const saved = byCode[def.code];
+        if (!saved) return Object.assign({}, def);
+        return Object.assign({}, def, saved, { enabled: saved.enabled !== false });
+      });
+    }
+  } catch (e) {}
+  const initial = DEFAULT_30_COUPONS.map(c => Object.assign({}, c));
+  try { localStorage.setItem(COUPONS_STORAGE_KEY, JSON.stringify(initial)); } catch (e) {}
+  return initial;
+}
+
+function saveCouponsRegistry(list, fromRemote) {
+  try { localStorage.setItem(COUPONS_STORAGE_KEY, JSON.stringify(list)); } catch (e) {}
+  if (!fromRemote) {
+    try { if (typeof __adminBC !== "undefined" && __adminBC) __adminBC.postMessage({ type: "COUPONS_UPDATED", coupons: list }); } catch (e) {}
+    try { if (typeof window.__pushCouponsToCloud === "function") window.__pushCouponsToCloud(list); } catch (e) {}
+  }
+}
+
+function loadComingSoonSignups() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(CS_SIGNUPS_STORAGE_KEY) || "[]");
+    if (Array.isArray(raw)) return raw;
+  } catch (e) {}
+  return [];
+}
+
+function saveComingSoonSignups(list, fromRemote) {
+  try { localStorage.setItem(CS_SIGNUPS_STORAGE_KEY, JSON.stringify(list)); } catch (e) {}
+  if (!fromRemote) {
+    try { if (typeof __adminBC !== "undefined" && __adminBC) __adminBC.postMessage({ type: "CS_SIGNUPS_UPDATED", signups: list }); } catch (e) {}
+    try { if (typeof window.__pushCsSignupsToCloud === "function") window.__pushCsSignupsToCloud(list); } catch (e) {}
+  }
+}
+
+function refreshAllCardGridsForAdProgress() {
+  try { if (typeof bar === "function") bar(); } catch (e) {}
+  try { if (typeof grid === "function") grid(); } catch (e) {}
+  try { if (typeof renderHomePage === "function") renderHomePage(); } catch (e) {}
+  try { if (typeof renderRecommendedOnHome === "function") renderRecommendedOnHome(); } catch (e) {}
+  try { if (typeof renderCreationsPage === "function" && activePage === "creations") renderCreationsPage(); } catch (e) {}
+}
+window.refreshAllCardGridsForAdProgress = refreshAllCardGridsForAdProgress;
+
+function redeemCouponForItem(rawCode, t) {
+  const cleanCode = String(rawCode || "").trim().toUpperCase();
+  if (!cleanCode) {
+    return { ok: false, msg: "⚠️ Please enter your coupon code first." };
+  }
+  const siteCfg = typeof loadSiteConfig === "function" ? loadSiteConfig() : {};
+  if (siteCfg && siteCfg.couponsSystemEnabled === false) {
+    return { ok: false, msg: "⚠️ Coupon code redemptions are currently disabled by the Administrator." };
+  }
+  const coupons = loadCouponsRegistry();
+  const entry = coupons.find(c => c.code.toUpperCase() === cleanCode);
+  if (!entry) {
+    return { ok: false, msg: `⚠️ Invalid coupon code. Please enter a valid coupon code issued by the Administrator.` };
+  }
+  if (entry.enabled === false) {
+    return {
+      ok: false,
+      msg: `⚠️ This coupon code has been disabled by the Administrator and cannot be used right now.`
+    };
+  }
+  const isVid = !!(t && t.isVideo);
+  if (isVid && entry.type !== "video") {
+    return {
+      ok: false,
+      msg: `⚠️ This code is a Template Coupon Code (valid for 2 Premium Templates). To unlock a Premium Video, please enter a Video Coupon Code.`
+    };
+  }
+  if (!isVid && entry.type !== "template") {
+    return {
+      ok: false,
+      msg: `⚠️ This code is a Video Coupon Code (valid for Premium Videos). To unlock a Premium Template, please enter a Template Coupon Code.`
+    };
+  }
+  const remaining = Number(entry.usesLeft !== undefined ? entry.usesLeft : (entry.maxUses - (entry.usedCount || 0)));
+  if (remaining <= 0) {
+    return {
+      ok: false,
+      msg: `⚠️ This coupon code has already been used ${entry.maxUses}/${entry.maxUses} times and has 0 unlocks remaining.`
+    };
+  }
+  if (t && unlocked.includes(t.id)) {
+    return { ok: true, msg: `✅ "${t.title}" is already unlocked! Opening editor…`, alreadyUnlocked: true, entry };
+  }
+
+  // Consume 1 use of the coupon and unlock the selected item immediately without ads!
+  entry.usesLeft = Math.max(0, remaining - 1);
+  entry.usedCount = (Number(entry.usedCount) || 0) + 1;
+  if (!Array.isArray(entry.unlockedItems)) entry.unlockedItems = [];
+  let sess = null;
+  try { sess = JSON.parse(localStorage.getItem("gryxcell_active_session_v1") || "null"); } catch (e) {}
+  const uname = (sess && sess.username) ? sess.username : "guest_user";
+  entry.unlockedItems.push({
+    id: t ? t.id : 0,
+    title: t ? t.title : "Item",
+    username: uname,
+    at: new Date().toLocaleString()
+  });
+  saveCouponsRegistry(coupons);
+
+  if (t && !unlocked.includes(t.id)) {
+    unlocked.push(t.id);
+  }
+  save();
+  if (t && typeof recordUnlockOrPurchase === "function") {
+    recordUnlockOrPurchase(t, `Coupon (${entry.code})`, 0);
+  }
+  refreshAllCardGridsForAdProgress();
+  try {
+    if (entry.usesLeft > 0) {
+      localStorage.setItem("templates_last_used_coupon", entry.code);
+    } else {
+      localStorage.removeItem("templates_last_used_coupon");
+    }
+  } catch (e) {}
+
+  const leftMsg = entry.type === "template"
+    ? (entry.usesLeft > 0
+        ? `You still have ${entry.usesLeft} more free template unlock left on this coupon — select a 2nd Premium Template of your choice anytime and click Apply Coupon again!`
+        : `You have now used all ${entry.maxUses}/${entry.maxUses} free template unlocks on this coupon.`)
+    : `Your 1 free Premium Video unlock on this coupon has been redeemed!`;
+
+  return {
+    ok: true,
+    entry,
+    msg: `🎉 Coupon Applied! Unlocked "${t ? t.title : "Premium Item"}" for FREE without watching ads! ${leftMsg}`
+  };
+}
+
+// Rotating Reliable Partner Direct Links for Live Website Hosting
+const LIVE_AD_DIRECT_LINKS = [
+  "https://araplhn.org/4/50e4b8dd969999935a8cccbe2ec8eecb",
+  "https://araplhn.org/4/12255453",
+  "https://araplhn.org/4/12252888"
+];
+const AD_WATCH_DURATION_MS = 15000; // 15 seconds real-clock verification (works across background tabs on mobile & live domains)
+
 function openAd(t) {
   if (!t) return;
   const previous = document.getElementById("partnerRewardModal");
   if (previous) previous.remove();
-  const required = getRequiredAdsForItem(t);
+  const required = getRequiredAdsForItem(t); // 3 for Premium Template, 5 for Premium Video
   const watched = getAdsWatchedForItem(t);
-  function showUnlockSuccess() {
+
+  function showUnlockSuccess(customSubMsg) {
     const success = document.createElement("div");
     success.id = "premiumUnlockSuccess";
-    success.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
-    success.innerHTML = `<div style="max-width:420px;width:100%;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font:600 15px/1.5 system-ui,sans-serif"><h2 style="margin:0 0 8px">🎉 Congratulations!</h2><p style="margin:0 0 16px">You have unlocked the ${t.isVideo ? "premium video" : "premium template"} after completing all ${required} ad steps.</p><button type="button" id="premiumUnlockContinue" style="border:0;border-radius:10px;padding:11px 20px;background:#0284c7;color:#fff;font-weight:800;cursor:pointer">Continue</button></div>`;
+    success.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(6,14,28,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px";
+    success.innerHTML = `<div style="max-width:440px;width:100%;background:var(--card,#fff);color:var(--text,#0c3559);border:2px solid #38bdf8;border-radius:22px;padding:28px 24px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.45);font:600 15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 12px;box-shadow:0 10px 24px rgba(16,185,129,.35)">🎉</div>
+      <h2 style="margin:0 0 8px;font-size:1.3rem;font-weight:800">Congratulations! Unlocked!</h2>
+      <p style="margin:0 0 18px;font-size:.9rem;color:var(--muted)">${customSubMsg || `You have unlocked this ${t.isVideo ? "Premium Video (5/5 ads)" : "Premium Template (3/3 ads)"}!`}</p>
+      <button type="button" id="premiumUnlockContinue" style="width:100%;border:0;border-radius:12px;padding:13px 20px;background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:0 8px 20px rgba(14,165,233,.35)">✨ Open &amp; Customize Now →</button>
+    </div>`;
     document.body.appendChild(success);
-    success.querySelector("#premiumUnlockContinue").onclick = () => { success.remove(); openUse(t); };
+    success.querySelector("#premiumUnlockContinue").onclick = () => {
+      success.remove();
+      openUse(t);
+    };
   }
-  if (unlocked.includes(t.id)) { openUse(t); return; }
+
+  if (unlocked.includes(t.id)) {
+    openUse(t);
+    return;
+  }
   if (watched >= required) {
-    unlocked.push(t.id);
+    if (!unlocked.includes(t.id)) unlocked.push(t.id);
     save();
+    refreshAllCardGridsForAdProgress();
     showUnlockSuccess();
     return;
   }
+
+  // Pre-fill last used template coupon if it still has 1 use left!
+  let suggestedCoupon = "";
+  try {
+    const lastC = localStorage.getItem("templates_last_used_coupon") || "";
+    if (lastC) {
+      const cObj = loadCouponsRegistry().find(c => c.code === lastC);
+      if (cObj && cObj.enabled !== false && cObj.usesLeft > 0 && ((t.isVideo && cObj.type === "video") || (!t.isVideo && cObj.type === "template"))) {
+        suggestedCoupon = cObj.code;
+      }
+    }
+  } catch (e) {}
+
+  const itemKey = String(t.id);
+  const adUrl = LIVE_AD_DIRECT_LINKS[(Number(t.id || 0) + watched) % LIVE_AD_DIRECT_LINKS.length];
+  const stepPct = Math.round((watched / required) * 100);
+
   const overlay = document.createElement("div");
   overlay.id = "partnerRewardModal";
-  overlay.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
+  overlay.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(6,14,28,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto";
   overlay.innerHTML = `
-    <div style="position:relative;max-width:440px;width:100%;min-height:220px;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:600 15px/1.5 system-ui,sans-serif">
-      <button type="button" id="partnerRewardClose" aria-label="Close ad and count this ad" title="Close and count this ad" style="display:none;position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;border-radius:50%;background:#111827;color:#fff;font-size:27px;line-height:1;cursor:pointer">×</button>
-      <h2 style="margin:0;font-size:1.2rem">Watch Ad ${watched + 1} of ${required} to Unlock ${t.isVideo ? "Premium Video" : "Premium Template"}</h2>
-      <p id="partnerRewardInstruction" style="margin:0;max-width:360px;text-align:center;font-size:.9rem">After tapping Watch Ad, leave the ad tab open and return to this page after 20 seconds. The × will appear here; tap it to count this ad.</p>
-      <a id="partnerRewardLink" href="https://araplhn.org/4/50e4b8dd969999935a8cccbe2ec8eecb" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:12px 22px;background:#0284c7;color:#fff;text-decoration:none;font-weight:800">Watch Ad</a>
+    <div style="position:relative;max-width:480px;width:100%;background:var(--card,#fff);color:var(--text,#0c3559);border:1.5px solid #38bdf8;border-radius:24px;padding:24px 22px;box-shadow:0 24px 64px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:14px;font:600 14.5px/1.48 'Plus Jakarta Sans',system-ui,sans-serif;margin:auto">
+      <button type="button" id="partnerRewardCancelTop" aria-label="Close modal" title="Close" style="position:absolute;top:12px;right:12px;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--text);font-size:18px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      <button type="button" id="partnerRewardClose" aria-label="Count this ad" title="Count this ad" style="display:none;position:absolute;top:12px;right:52px;height:34px;padding:0 12px;border:0;border-radius:99px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-size:.78rem;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,.4)">✓ Count Ad ×</button>
+
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:.7rem;font-weight:800;padding:4px 10px;border-radius:99px;background:rgba(14,165,233,.15);color:#0284c7;border:1px solid #38bdf8">
+          ${t.isVideo ? "🎬 PREMIUM VIDEO · 5 ADS OR 1 COUPON" : "👑 PREMIUM TEMPLATE · 3 ADS OR 1 COUPON"}
+        </span>
+        <span style="font-size:.72rem;font-weight:800;color:#d97706">Step ${watched + 1} of ${required}</span>
+      </div>
+
+      <div>
+        <h2 style="margin:0 0 4px;font-size:1.18rem;font-weight:800">Unlock “${esc(t.title)}”</h2>
+        <p style="margin:0;font-size:.82rem;color:var(--muted)">
+          Watch <strong>${required} short sponsor ads</strong> (${watched}/${required} completed) — OR apply a <strong>Coupon Code</strong> below to unlock immediately without watching ads!
+        </p>
+      </div>
+
+      <!-- Ad Step Progress Bar -->
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px">
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;font-weight:800;margin-bottom:6px">
+          <span>📺 Ad Unlock Progress (${t.isVideo ? "5 Ads for Video" : "3 Ads for Template"})</span>
+          <span style="color:#0284c7">${watched} / ${required} Ads Completed</span>
+        </div>
+        <div style="height:8px;border-radius:99px;background:rgba(14,165,233,0.15);overflow:hidden">
+          <div id="adOverallProgBar" style="height:100%;width:${stepPct}%;background:linear-gradient(90deg,#38bdf8,#0284c7,#10b981);transition:width .3s"></div>
+        </div>
+      </div>
+
+      <!-- Option 1: Watch Ad Box -->
+      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div id="partnerRewardInstruction" style="font-size:.83rem;color:var(--text);line-height:1.45">
+          Tap <strong>▶ Watch Ad ${watched + 1} of ${required}</strong> below. Keep the sponsor tab open for <strong>15 seconds</strong>, then return here to claim your ad step!
+        </div>
+        <div id="adTimerCountdownBarWrap" style="display:none;width:100%;height:7px;border-radius:99px;background:rgba(14,165,233,0.16);overflow:hidden">
+          <div id="adTimerCountdownFill" style="height:100%;width:0%;background:linear-gradient(90deg,#f59e0b,#10b981);transition:width .25s"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%">
+          <a id="partnerRewardLink" href="${adUrl}" target="_blank" rel="noopener noreferrer" style="flex:1;min-width:190px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;padding:12px 18px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;text-decoration:none;font-weight:800;font-size:.9rem;box-shadow:0 8px 20px rgba(2,132,199,.3)">
+            ▶ Watch Ad ${watched + 1} of ${required}
+          </a>
+          <button type="button" id="partnerRewardClaimBtn" style="display:none;flex:1;min-width:190px;border:0;border-radius:12px;padding:12px 18px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:800;font-size:.9rem;cursor:pointer;box-shadow:0 8px 20px rgba(16,185,129,.35)">
+            ✅ Count Ad ${watched + 1} of ${required} &amp; Continue
+          </button>
+        </div>
+        <button type="button" id="partnerRewardReopenBtn" style="display:none;border:0;background:none;color:#0284c7;font-size:.75rem;font-weight:700;text-decoration:underline;cursor:pointer">
+          ↻ Ad didn't open? Tap here to re-open sponsor link
+        </button>
+      </div>
+
+      <!-- Option 2: Instant Coupon Code Redemption Box (No Ads!) -->
+      <div style="background:linear-gradient(135deg,rgba(14,165,233,0.09),rgba(37,99,235,0.12));border:1.5px dashed #38bdf8;border-radius:16px;padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+          <strong style="font-size:.83rem;color:#0284c7">🎟️ Have a Coupon Code? Unlock Free Without Ads!</strong>
+          <span style="font-size:.69rem;font-weight:800;padding:2px 8px;border-radius:99px;background:#e0f2fe;color:#0369a1">
+            ${t.isVideo ? "1x Free Video Unlock" : "2x Free Template Unlocks"}
+          </span>
+        </div>
+        <p style="margin:0 0 8px;font-size:.76rem;color:var(--muted)">
+          ${t.isVideo
+            ? "Enter your secret Video Coupon Code received from the Admin to unlock this Premium Video with 0 ads."
+            : "Enter your secret Template Coupon Code received from the Admin to unlock 2 Premium Templates of your choice with 0 ads!"}
+        </p>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <input id="modalCouponCodeInput" value="${esc(suggestedCoupon)}" placeholder="${t.isVideo ? "Enter your secret Video Coupon Code" : "Enter your secret Template Coupon Code"}" style="flex:1;min-width:170px;margin:0;padding:10px 12px;border-radius:10px;border:1.5px solid #7dd3fc;background:var(--card);color:var(--text);font-weight:800;text-transform:uppercase;font-size:.84rem">
+          <button type="button" id="modalApplyCouponBtn" style="border:0;border-radius:10px;padding:10px 16px;background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;font-weight:800;font-size:.82rem;cursor:pointer;white-space:nowrap;box-shadow:0 6px 16px rgba(37,99,235,.28)">
+            🎟️ Apply Coupon
+          </button>
+        </div>
+        <div id="modalCouponFeedback" style="font-size:.76rem;font-weight:700;margin-top:6px;min-height:16px"></div>
+      </div>
     </div>`;
   document.body.appendChild(overlay);
-  let closeTimer = null;
-  const itemKey = String(t.id);
+
+  let checkIv = null;
   const closeButton = overlay.querySelector("#partnerRewardClose");
+  const cancelTopBtn = overlay.querySelector("#partnerRewardCancelTop");
+  const claimBtn = overlay.querySelector("#partnerRewardClaimBtn");
+  const reopenBtn = overlay.querySelector("#partnerRewardReopenBtn");
   const adLink = overlay.querySelector("#partnerRewardLink");
   const instruction = overlay.querySelector("#partnerRewardInstruction");
-  function revealCloseButton() {
-    closeButton.style.display = "flex";
+  const barWrap = overlay.querySelector("#adTimerCountdownBarWrap");
+  const barFill = overlay.querySelector("#adTimerCountdownFill");
+  const couponInp = overlay.querySelector("#modalCouponCodeInput");
+  const couponBtn = overlay.querySelector("#modalApplyCouponBtn");
+  const couponMsg = overlay.querySelector("#modalCouponFeedback");
+
+  function cleanupTimers() {
+    if (checkIv) {
+      clearInterval(checkIv);
+      checkIv = null;
+    }
+    window.removeEventListener("focus", checkAdElapsed);
+    document.removeEventListener("visibilitychange", checkAdElapsed);
+  }
+
+  cancelTopBtn.onclick = () => {
+    cleanupTimers();
+    overlay.remove();
+  };
+
+  function revealClaimUI() {
+    cleanupTimers();
+    if (barWrap) barWrap.style.display = "block";
+    if (barFill) barFill.style.width = "100%";
+    closeButton.style.display = "inline-flex";
     closeButton.style.alignItems = "center";
     closeButton.style.justifyContent = "center";
+    claimBtn.style.display = "inline-flex";
+    claimBtn.style.alignItems = "center";
+    claimBtn.style.justifyContent = "center";
+    adLink.style.display = "none";
+    instruction.innerHTML = `<strong style="color:#059669">✅ Ad ${watched + 1} of ${required} verified!</strong> Tap <strong>Count Ad ${watched + 1} of ${required} &amp; Continue</strong> (or the top × button) to record this step.`;
   }
-  function resumePendingAd() {
+
+  function checkAdElapsed() {
     const startedAt = Number(pendingAdByTemplate[itemKey] || 0);
-    if (!startedAt) return false;
-    adLink.style.display = "none";
-    const remaining = Math.max(0, 20000 - (Date.now() - startedAt));
-    instruction.textContent = remaining
-      ? `Your ad step is saved. Return here after 20 seconds total; the × will appear in about ${Math.ceil(remaining / 1000)} seconds.`
-      : "Your saved ad step is ready. Tap × to count it.";
-    if (remaining === 0) revealCloseButton();
-    else closeTimer = setTimeout(revealCloseButton, remaining);
-    return true;
+    if (!startedAt) return;
+    const elapsed = Math.max(0, Date.now() - startedAt);
+    const remainingMs = Math.max(0, AD_WATCH_DURATION_MS - elapsed);
+    const pct = Math.min(100, Math.round((elapsed / AD_WATCH_DURATION_MS) * 100));
+    if (barWrap) barWrap.style.display = "block";
+    if (barFill) barFill.style.width = pct + "%";
+    if (remainingMs <= 0) {
+      revealClaimUI();
+    } else {
+      const secLeft = Math.ceil(remainingMs / 1000);
+      instruction.innerHTML = `⏳ Watching Ad <strong>${watched + 1} of ${required}</strong>… Please wait <strong>${secLeft}s</strong> (timer continues even while you view the ad tab).`;
+    }
   }
-  const hasPendingAd = resumePendingAd();
-  if (!hasPendingAd) adLink.addEventListener("click", () => {
-    pendingAdByTemplate[itemKey] = Date.now();
-    save();
+
+  function startAdStepTracking(resetTimestamp) {
+    if (resetTimestamp || !pendingAdByTemplate[itemKey]) {
+      pendingAdByTemplate[itemKey] = Date.now();
+      save();
+    }
     adLink.style.display = "none";
-    instruction.textContent = "Ad opened. Return to this page after 20 seconds; the × will appear here to count the ad.";
-    if (closeTimer) clearTimeout(closeTimer);
-    closeTimer = setTimeout(revealCloseButton, 20000);
+    reopenBtn.style.display = "inline-block";
+    checkAdElapsed();
+    if (checkIv) clearInterval(checkIv);
+    checkIv = setInterval(checkAdElapsed, 250);
+    window.addEventListener("focus", checkAdElapsed);
+    document.addEventListener("visibilitychange", checkAdElapsed);
+  }
+
+  // If user already clicked Watch Ad for this template recently (< 10 minutes ago), resume seamlessly
+  const existingStart = Number(pendingAdByTemplate[itemKey] || 0);
+  if (existingStart && (Date.now() - existingStart) < 600000) {
+    startAdStepTracking(false);
+  } else if (existingStart) {
+    delete pendingAdByTemplate[itemKey];
+    save();
+  }
+
+  adLink.addEventListener("click", () => {
+    startAdStepTracking(true);
   });
-  closeButton.addEventListener("click", () => {
+
+  reopenBtn.addEventListener("click", () => {
+    try { window.open(adUrl, "_blank", "noopener,noreferrer"); } catch (e) {}
+    startAdStepTracking(true);
+  });
+
+  function completeCurrentAdStep() {
+    cleanupTimers();
     delete pendingAdByTemplate[itemKey];
     const nextWatched = getAdsWatchedForItem(t) + 1;
     adProgressByTemplate[itemKey] = nextWatched;
+    activeAdUnlock = { templateId: t.id, watched: nextWatched, required: required };
     save();
-    if (closeTimer) clearTimeout(closeTimer);
     overlay.remove();
+
     if (nextWatched >= required) {
       if (!unlocked.includes(t.id)) unlocked.push(t.id);
+      activeAdUnlock = { templateId: null, watched: 0, required: required };
       save();
       if (typeof recordUnlockOrPurchase === "function") recordUnlockOrPurchase(t, "Partner ad reward", nextWatched);
-      if (typeof bar === "function") bar();
-      if (typeof grid === "function") grid();
-      if (typeof renderCreationsPage === "function" && activePage === "creations") renderCreationsPage();
+      refreshAllCardGridsForAdProgress();
       showUnlockSuccess();
     } else {
-      if (typeof bar === "function") bar();
-      if (typeof grid === "function") grid();
+      refreshAllCardGridsForAdProgress();
       const stepNotice = document.createElement("div");
-      stepNotice.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
-      stepNotice.innerHTML = `<div style="max-width:420px;width:100%;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font:600 15px/1.5 system-ui,sans-serif"><h2 style="margin:0 0 8px">Ad ${nextWatched} watch step completed!</h2><p style="margin:0">${required - nextWatched} more ad${required - nextWatched === 1 ? "" : "s"} to go. Next: Ad ${nextWatched + 1} of ${required}.</p></div>`;
+      stepNotice.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(6,14,28,.84);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:18px";
+      stepNotice.innerHTML = `<div style="max-width:420px;width:100%;background:var(--card,#fff);color:var(--text,#0c3559);border:1.5px solid #38bdf8;border-radius:20px;padding:26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);font:600 15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif">
+        <div style="font-size:2rem;margin-bottom:6px">✅</div>
+        <h2 style="margin:0 0 8px;font-size:1.18rem">Ad ${nextWatched} of ${required} Completed!</h2>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:.88rem">Only <strong>${required - nextWatched} more ad${required - nextWatched === 1 ? "" : "s"}</strong> to go! Loading Ad Step ${nextWatched + 1} of ${required}…</p>
+        <button type="button" id="nextAdStepNowBtn" style="border:0;border-radius:10px;padding:10px 18px;background:#0284c7;color:#fff;font-weight:800;cursor:pointer">Continue to Ad ${nextWatched + 1} →</button>
+      </div>`;
       document.body.appendChild(stepNotice);
-      setTimeout(() => { stepNotice.remove(); openAd(t); }, 1600);
+      let advanced = false;
+      const goNext = () => {
+        if (advanced) return;
+        advanced = true;
+        stepNotice.remove();
+        openAd(t);
+      };
+      stepNotice.querySelector("#nextAdStepNowBtn").onclick = goNext;
+      setTimeout(goNext, 1300);
+    }
+  }
+
+  closeButton.addEventListener("click", completeCurrentAdStep);
+  claimBtn.addEventListener("click", completeCurrentAdStep);
+
+  function handleCouponApply() {
+    const res = redeemCouponForItem(couponInp.value, t);
+    if (!res.ok) {
+      couponMsg.style.color = "#dc2626";
+      couponMsg.textContent = res.msg;
+      return;
+    }
+    couponMsg.style.color = "#059669";
+    couponMsg.textContent = res.msg;
+    cleanupTimers();
+    overlay.remove();
+    showToast(res.msg);
+    showUnlockSuccess(res.msg);
+  }
+
+  couponBtn.addEventListener("click", handleCouponApply);
+  couponInp.addEventListener("keydown", ev => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      handleCouponApply();
     }
   });
+}
+
+// Standalone Coupon Wallet / Quick Apply Modal (Opened from Navbar '🎟️ Coupon Code' button)
+function openCouponWalletModal() {
+  const prev = document.getElementById("couponWalletModal");
+  if (prev) prev.remove();
+  const coupons = loadCouponsRegistry();
+  const premiumItems = T.filter(x => x.prem && !unlocked.includes(x.id));
+  const lastC = (localStorage.getItem("templates_last_used_coupon") || "").toUpperCase();
+
+  const modal = document.createElement("div");
+  modal.id = "couponWalletModal";
+  modal.style.cssText = "position:fixed;inset:0;z-index:99998;background:rgba(6,14,28,.84);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto";
+  modal.innerHTML = `
+    <div style="max-width:540px;width:100%;background:var(--card,#fff);color:var(--text,#0c3559);border:1.5px solid #38bdf8;border-radius:24px;padding:24px;box-shadow:0 24px 64px rgba(0,0,0,.45);margin:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+        <div>
+          <span style="font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:99px;background:#e0f2fe;color:#0284c7;border:1px solid #7dd3fc">🎟️ INSTANT NO-AD COUPON REDEEMER</span>
+          <h2 style="margin:6px 0 2px;font-size:1.22rem;font-weight:800">Apply Coupon Code for Free Templates &amp; Videos</h2>
+        </div>
+        <button type="button" id="closeCouponWalletBtn" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--text);font-weight:800;cursor:pointer">✕</button>
+      </div>
+      <p style="margin:0 0 12px;font-size:.82rem;color:var(--muted);line-height:1.45">
+        • <strong>Template Coupon Codes (15 Codes):</strong> Each code unlocks <strong>2 Premium Templates</strong> of your choice without watching any ads!<br>
+        • <strong>Video Coupon Codes (15 Codes):</strong> Each code unlocks <strong>1 Premium Video</strong> of your choice without watching any ads!
+      </p>
+
+      <label class="field-lbl" for="walletTargetSelect">1. Choose Locked Premium Template or Video to Unlock Free</label>
+      <select id="walletTargetSelect" style="width:100%;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);font-size:.84rem;font-weight:700;margin-bottom:10px">
+        ${premiumItems.map(item => `<option value="${item.id}">${item.isVideo ? "🎬 [PREMIUM VIDEO - 5 Ads]" : "🎨 [PREMIUM TEMPLATE - 3 Ads]"} ${esc(item.cat)} — ${esc(item.title)}</option>`).join("") || `<option value="">🎉 All Premium Templates & Videos Are Already Unlocked!</option>`}
+      </select>
+
+      <label class="field-lbl" for="walletCouponInput">2. Enter Your Coupon Code</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <input id="walletCouponInput" value="${esc(lastC)}" placeholder="Enter your secret coupon code" style="flex:1;min-width:190px;margin:0;padding:11px 14px;border-radius:11px;border:1.5px solid #38bdf8;background:var(--bg);color:var(--text);font-weight:800;text-transform:uppercase;font-size:.9rem">
+        <button type="button" id="walletRedeemBtn" style="border:0;border-radius:11px;padding:11px 18px;background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;font-weight:800;font-size:.86rem;cursor:pointer;box-shadow:0 6px 18px rgba(14,165,233,.3)">
+          🎟️ Apply &amp; Unlock Free
+        </button>
+      </div>
+      <div id="walletCouponStatus" style="font-size:.8rem;font-weight:700;min-height:18px;margin-bottom:8px"></div>
+      <div style="font-size:.75rem;color:var(--muted);background:var(--bg);padding:10px 12px;border-radius:12px;border:1px solid var(--line)">
+        💡 <strong>Tip:</strong> You can also click directly on any Premium Template or Video card on the website and enter your coupon code inside its unlock popup!
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.querySelector("#closeCouponWalletBtn").onclick = () => modal.remove();
+  modal.querySelector("#walletRedeemBtn").onclick = () => {
+    const selId = Number(modal.querySelector("#walletTargetSelect").value);
+    const targetItem = T.find(x => x.id === selId) || premiumItems[0];
+    const codeVal = modal.querySelector("#walletCouponInput").value;
+    const statusEl = modal.querySelector("#walletCouponStatus");
+    if (!targetItem) {
+      statusEl.style.color = "#059669";
+      statusEl.textContent = "🎉 All premium items are already unlocked!";
+      return;
+    }
+    const res = redeemCouponForItem(codeVal, targetItem);
+    if (!res.ok) {
+      statusEl.style.color = "#dc2626";
+      statusEl.textContent = res.msg;
+      return;
+    }
+    statusEl.style.color = "#059669";
+    statusEl.textContent = res.msg;
+    setTimeout(() => {
+      modal.remove();
+      openUse(targetItem);
+    }, 900);
+  };
+}
+if (document.getElementById("openCouponWalletBtn")) {
+  document.getElementById("openCouponWalletBtn").onclick = openCouponWalletModal;
 }
 let modalSecTimer = null, modalSecElapsed = 0;
 function currentSvg() {
@@ -10227,6 +11076,149 @@ const USAGE_STATS_KEY = "templates_usage_stats_v2";
 const PURCHASES_LEDGER_KEY = "templates_purchases_ledger_v1";
 const USERS_STORAGE_KEY = "gryxcell_firebase_users_v1";
 const SESSION_STORAGE_KEY = "gryxcell_active_session_v1";
+const OTP_STORE_KEY = "templates_otp_store_v1";
+
+function loadOtpStore() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(OTP_STORE_KEY) || "{}");
+    if (raw && typeof raw === "object") return raw;
+  } catch (e) {}
+  return {};
+}
+
+function saveOtpStore(store, fromRemote) {
+  try { localStorage.setItem(OTP_STORE_KEY, JSON.stringify(store)); } catch (e) {}
+  if (!fromRemote) {
+    try { if (typeof __adminBC !== "undefined" && __adminBC) __adminBC.postMessage({ type: "OTP_STORE_UPDATED", otpStore: store }); } catch (e) {}
+    try { if (typeof window.__pushOtpStoreToCloud === "function") window.__pushOtpStoreToCloud(store); } catch (e) {}
+  }
+}
+
+function generateSixDigitOtp() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+async function createAndDispatchOtpEmail(emailRaw, usernameRaw, purpose, extraMeta) {
+  const email = String(emailRaw || "").trim().toLowerCase();
+  const uname = String(usernameRaw || "").trim().replace(/^@+/, "").toLowerCase();
+  const cleanCustomOtp = extraMeta && extraMeta.customOtp ? String(extraMeta.customOtp).replace(/\D+/g, "").slice(0, 6) : "";
+  const otp = cleanCustomOtp.length === 6 ? cleanCustomOtp : generateSixDigitOtp();
+  const resolvedPurpose = purpose || "signup";
+  const store = loadOtpStore();
+  const now = Date.now();
+  const record = {
+    email: email,
+    username: uname || email.split("@")[0],
+    otp: otp,
+    purpose: resolvedPurpose,
+    newEmail: (extraMeta && extraMeta.newEmail) ? String(extraMeta.newEmail).toLowerCase() : "",
+    sentBy: (extraMeta && extraMeta.sentBy) || "system",
+    createdAt: now,
+    expiresAt: now + 15 * 60 * 1000,
+    verified: false,
+    supabaseUserId: (extraMeta && extraMeta.supabaseUserId) || ""
+  };
+  if (email) store[email] = record;
+  if (uname) store["@" + uname] = record;
+  if (record.newEmail) store[record.newEmail] = record;
+  saveOtpStore(store);
+
+  // Also store latest OTP reference on the user record so Admin Table always shows active OTP state
+  let userSavedPassword = (extraMeta && extraMeta.password) || undefined;
+  try {
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}");
+    const targetKey = uname && users[uname] ? uname : Object.keys(users).find(k => (users[k].email || "").toLowerCase() === email);
+    if (targetKey && users[targetKey]) {
+      users[targetKey].lastOtpCode = otp;
+      users[targetKey].lastOtpPurpose = resolvedPurpose;
+      users[targetKey].lastOtpSentAt = now;
+      if (!userSavedPassword && users[targetKey].password) {
+        userSavedPassword = users[targetKey].password;
+      }
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+      try { if (typeof __adminBC !== "undefined" && __adminBC) __adminBC.postMessage({ type: "USER_UPDATED", username: targetKey, data: users[targetKey] }); } catch (e) {}
+      try { if (typeof window.__pushUserToCloud === "function") window.__pushUserToCloud(targetKey, users[targetKey]); } catch (e) {}
+    }
+  } catch (e) {}
+
+  let supabaseSent = false;
+  const targetDispatchMail = record.newEmail || email;
+  if (typeof window.__dispatchSupabaseEmailOtp === "function" && targetDispatchMail) {
+    try {
+      const sbRes = await window.__dispatchSupabaseEmailOtp(targetDispatchMail, resolvedPurpose, {
+        username: record.username,
+        otp: otp,
+        password: userSavedPassword,
+        isResend: !!(extraMeta && extraMeta.isResend)
+      });
+      if (sbRes && sbRes.sent) {
+        record.supabaseUserId = sbRes.userId || record.supabaseUserId;
+        supabaseSent = true;
+        saveOtpStore(store);
+      }
+    } catch (e) {}
+  }
+
+  return { otp, record, supabaseSent };
+}
+
+async function verifyCustomerOtpCode(emailOrUnameRaw, enteredOtpRaw, allowedPurposes, rawFullTokenOptional) {
+  const digitsOnly = String(enteredOtpRaw || "").replace(/\D+/g, "");
+  const code = digitsOnly.slice(0, 6);
+  if (code.length !== 6) {
+    return { ok: false, reason: "⚠️ Please enter a valid 6-digit numeric OTP in the box." };
+  }
+  const key = String(emailOrUnameRaw || "").trim().toLowerCase();
+  const unameKey = "@" + key.replace(/^@+/, "");
+  const store = loadOtpStore();
+  let rec = store[key] || store[unameKey] || null;
+  if (!rec) {
+    const allRecs = Object.values(store);
+    rec = allRecs.find(r => r && ((r.email || "").toLowerCase() === key || (r.newEmail || "").toLowerCase() === key || (r.username || "").toLowerCase() === key.replace(/^@+/, ""))) || null;
+  }
+
+  if (rec) {
+    if (rec.expiresAt && Date.now() > Number(rec.expiresAt)) {
+      return { ok: false, reason: "⚠️ This 6-digit OTP has expired. Please click 'Resend 6-Digit OTP' (or ask Admin to send a fresh OTP)." };
+    }
+    const purposeAllowed = !allowedPurposes || !allowedPurposes.length || rec.purpose === "all" || rec.purpose === "admin_support" || allowedPurposes.includes(rec.purpose);
+    const storedSix = String(rec.otp || "").replace(/\D+/g, "").slice(0, 6);
+    if (purposeAllowed && storedSix && storedSix === code) {
+      rec.verified = true;
+      rec.verifiedAt = Date.now();
+      saveOtpStore(store);
+      return { ok: true, record: rec };
+    }
+  }
+
+  // Also check user record's lastOtpCode if Admin dispatched it directly to user record
+  try {
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}");
+    const uMatch = users[key.replace(/^@+/, "")] || Object.values(users).find(u => (u.email || "").toLowerCase() === key || (u.pendingNewEmail || "").toLowerCase() === key);
+    if (uMatch && uMatch.lastOtpCode && String(uMatch.lastOtpCode).replace(/\D+/g, "").slice(0, 6) === code) {
+      return { ok: true, record: { email: uMatch.email, username: uMatch.username, otp: code, purpose: uMatch.lastOtpPurpose || "all" } };
+    }
+  } catch (e) {}
+
+  // Try Supabase Email OTP verification against https://nujhenrphkjhiugnridb.supabase.co
+  const verifyTargetEmail = (rec && (rec.newEmail || rec.email)) || (key.includes("@") ? key : "");
+  const fallbackFullToken = rawFullTokenOptional || (digitsOnly.length > 6 ? digitsOnly : (window.__lastPastedRawOtpToken && window.__lastPastedRawOtpToken.startsWith(code) ? window.__lastPastedRawOtpToken : ""));
+  if (verifyTargetEmail && typeof window.__verifySupabaseEmailOtp === "function") {
+    try {
+      const sbOk = await window.__verifySupabaseEmailOtp(verifyTargetEmail, code, rec ? rec.purpose : (allowedPurposes && allowedPurposes[0]) || "signup", fallbackFullToken);
+      if (sbOk) {
+        if (rec) {
+          rec.verified = true;
+          rec.verifiedAt = Date.now();
+          saveOtpStore(store);
+        }
+        return { ok: true, record: rec || { email: verifyTargetEmail, otp: code } };
+      }
+    } catch (e) {}
+  }
+
+  return { ok: false, reason: "❌ Wrong 6-digit OTP! Verification failed — you cannot proceed or log in with an incorrect OTP." };
+}
 
 function loadSiteConfig() {
   try {
@@ -10249,7 +11241,13 @@ let __adminBC = null;
 try {
   __adminBC = new BroadcastChannel("templates_admin_sync_v1");
   __adminBC.onmessage = (ev) => {
-    if (ev.data && ev.data.type === "SITE_CONFIG_UPDATED" && ev.data.config) {
+    if (ev.data && ev.data.type === "COUPONS_UPDATED" && Array.isArray(ev.data.coupons)) {
+      try { localStorage.setItem(COUPONS_STORAGE_KEY, JSON.stringify(ev.data.coupons)); } catch (e) {}
+      refreshAllCardGridsForAdProgress();
+    } else if (ev.data && ev.data.type === "CS_SIGNUPS_UPDATED" && Array.isArray(ev.data.signups)) {
+      try { localStorage.setItem(CS_SIGNUPS_STORAGE_KEY, JSON.stringify(ev.data.signups)); } catch (e) {}
+      updateComingSoonCountdownTick();
+    } else if (ev.data && ev.data.type === "SITE_CONFIG_UPDATED" && ev.data.config) {
       try { localStorage.setItem(SITE_CONFIG_KEY, JSON.stringify(ev.data.config)); } catch (e) {}
       if (typeof syncSiteGatesUI === "function") syncSiteGatesUI();
       if (typeof renderRecommendedOnHome === "function") renderRecommendedOnHome();
@@ -10263,6 +11261,9 @@ try {
       } catch (e) {}
       if (typeof syncSiteGatesUI === "function") syncSiteGatesUI();
       if (typeof syncSubscriptionUI === "function") syncSubscriptionUI();
+    } else if (ev.data && ev.data.type === "OTP_STORE_UPDATED" && ev.data.otpStore) {
+      try { localStorage.setItem(OTP_STORE_KEY, JSON.stringify(ev.data.otpStore)); } catch (e) {}
+      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
     } else if (ev.data && ev.data.type === "SUBSCRIPTION_UPDATED") {
       if (typeof syncSubscriptionUI === "function") syncSubscriptionUI();
       if (typeof bar === "function") bar();
@@ -10391,17 +11392,109 @@ openUse = function(t, existingCreation) {
 // ============================================================================
 // MANDATORY WELCOME GATE & COMING SOON GATE CONTROLLER
 // ============================================================================
+let __csCountdownInterval = null;
+
+function formatTimeTwoDigits(n) {
+  return String(Math.max(0, Math.floor(n))).padStart(2, "0");
+}
+
+function updateComingSoonCountdownTick() {
+  const cfg = loadSiteConfig();
+  const csGate = $("#comingSoonGate");
+  if (cfg.siteStatus !== "coming_soon") {
+    if (__csCountdownInterval) {
+      clearInterval(__csCountdownInterval);
+      __csCountdownInterval = null;
+    }
+    return;
+  }
+
+  // Update Top 10 Remaining Spots badge
+  const signups = loadComingSoonSignups();
+  const spotsLeft = Math.max(0, 10 - signups.length);
+  if ($("#csTop10SpotsBadge")) {
+    $("#csTop10SpotsBadge").textContent = spotsLeft > 0
+      ? `🔥 ${spotsLeft} of 10 Top Coupon Spots Left!`
+      : `⚡ Top 10 Filled (${signups.length} Signed Up) — Join Waitlist!`;
+  }
+
+  const endTs = Number(cfg.comingSoonEndTime || 0);
+  if (!endTs) {
+    if ($("#csDaysVal")) $("#csDaysVal").textContent = "00";
+    if ($("#csHoursVal")) $("#csHoursVal").textContent = "12";
+    if ($("#csMinsVal")) $("#csMinsVal").textContent = "00";
+    if ($("#csSecsVal")) $("#csSecsVal").textContent = "00";
+    if ($("#csTimerStatusNote")) $("#csTimerStatusNote").textContent = "⏳ Waiting for Admin Launch Countdown Timer";
+    return;
+  }
+
+  const diffMs = endTs - Date.now();
+  if (diffMs <= 0) {
+    // Timer reached zero -> Auto-Activate the Website!
+    cfg.siteStatus = "active";
+    cfg.comingSoonEndTime = null;
+    saveSiteConfig(cfg);
+    if (__csCountdownInterval) {
+      clearInterval(__csCountdownInterval);
+      __csCountdownInterval = null;
+    }
+    syncSiteGatesUI();
+    showToast("🎉 Launch Countdown Reached Zero! Website is now LIVE!");
+    return;
+  }
+
+  const totalSecs = Math.floor(diffMs / 1000);
+  const days = Math.floor(totalSecs / 86400);
+  const hours = Math.floor((totalSecs % 86400) / 3600);
+  const mins = Math.floor((totalSecs % 3600) / 60);
+  const secs = totalSecs % 60;
+
+  if ($("#csDaysVal")) $("#csDaysVal").textContent = formatTimeTwoDigits(days);
+  if ($("#csHoursVal")) $("#csHoursVal").textContent = formatTimeTwoDigits(hours);
+  if ($("#csMinsVal")) $("#csMinsVal").textContent = formatTimeTwoDigits(mins);
+  if ($("#csSecsVal")) $("#csSecsVal").textContent = formatTimeTwoDigits(secs);
+  if ($("#csTimerStatusNote")) {
+    $("#csTimerStatusNote").textContent = `🚀 Website automatically activates in ${days > 0 ? days + "d " : ""}${formatTimeTwoDigits(hours)}:${formatTimeTwoDigits(mins)}:${formatTimeTwoDigits(secs)}!`;
+  }
+}
+
 function syncSiteGatesUI() {
   const cfg = loadSiteConfig();
   const csGate = $("#comingSoonGate");
+  const maintGate = $("#maintenanceGate");
   const authGate = $("#mandatoryAuthGate");
   const badge = $("#adminSiteStatusBadge");
 
-  if (cfg.siteStatus === "coming_soon") {
-    document.title = "Templates – Coming Soon";
-    if (csGate) csGate.classList.add("show-cs");
+  // Check if coming_soon timer already expired
+  if (cfg.siteStatus === "coming_soon" && cfg.comingSoonEndTime && Date.now() >= Number(cfg.comingSoonEndTime)) {
+    cfg.siteStatus = "active";
+    cfg.comingSoonEndTime = null;
+    saveSiteConfig(cfg);
+  }
+
+  if (cfg.siteStatus === "maintenance") {
+    document.title = "Templates – Under Maintenance";
+    if (maintGate) maintGate.classList.add("show-maint");
+    if (csGate) csGate.classList.remove("show-cs");
+    if ($("#maintCustomMessageTxt") && cfg.maintenanceMessage) {
+      $("#maintCustomMessageTxt").textContent = cfg.maintenanceMessage;
+    }
     if (badge) {
-      badge.textContent = "🚧 Site Status: COMING SOON (LOCKED)";
+      badge.textContent = "🛠️ Site Status: MAINTENANCE MODE";
+      badge.style.background = "rgba(56,189,248,0.18)";
+      badge.style.color = "#0284c7";
+      badge.style.borderColor = "#38bdf8";
+    }
+  } else if (cfg.siteStatus === "coming_soon") {
+    document.title = "Templates – Coming Soon & Top 10 Coupon Giveaway";
+    if (csGate) csGate.classList.add("show-cs");
+    if (maintGate) maintGate.classList.remove("show-maint");
+    updateComingSoonCountdownTick();
+    if (!__csCountdownInterval) {
+      __csCountdownInterval = setInterval(updateComingSoonCountdownTick, 1000);
+    }
+    if (badge) {
+      badge.textContent = "🚧 Site Status: COMING SOON (COUNTDOWN ACTIVE)";
       badge.style.background = "rgba(245,158,11,0.18)";
       badge.style.color = "#d97706";
       badge.style.borderColor = "#f59e0b";
@@ -10409,6 +11502,11 @@ function syncSiteGatesUI() {
   } else {
     document.title = "Templates – Videos and templates for every occasion";
     if (csGate) csGate.classList.remove("show-cs");
+    if (maintGate) maintGate.classList.remove("show-maint");
+    if (__csCountdownInterval) {
+      clearInterval(__csCountdownInterval);
+      __csCountdownInterval = null;
+    }
     if (badge) {
       badge.textContent = "🟢 Site Status: LIVE & ACTIVATED";
       badge.style.background = "rgba(16,185,129,0.16)";
@@ -10423,7 +11521,6 @@ function syncSiteGatesUI() {
   try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
 
   if (sess && sess.username && users[sess.username] && users[sess.username].banned) {
-    // Immediately revoke session if Admin banned this user!
     try { localStorage.removeItem(SESSION_STORAGE_KEY); } catch (e) {}
     sess = null;
     showToast("🚫 Your account (@" + Object.keys(users).find(k => users[k].banned) + ") has been suspended by Admin.");
@@ -10437,6 +11534,243 @@ function syncSiteGatesUI() {
 }
 window.syncSiteGatesUI = syncSiteGatesUI;
 syncSiteGatesUI();
+
+// ============================================================================
+// COMING SOON PAGE: TOP 10 EARLY SIGN-UP REGISTRATION HANDLERS
+// (Collects Email ID, Unique @Username, and Password -> Syncs to Admin Panel!)
+// ============================================================================
+function showCsBanner(msg, type) {
+  const el = $("#csSignupStatusBanner");
+  if (!el) return;
+  if (!msg) {
+    el.className = "auth-status-banner";
+    el.textContent = "";
+    return;
+  }
+  el.className = `auth-status-banner show ${type || "info"}`;
+  el.innerHTML = msg;
+}
+
+if ($("#csTogglePassBtn")) {
+  $("#csTogglePassBtn").onclick = () => {
+    const inp = $("#csRegPassword");
+    if (inp) inp.type = inp.type === "password" ? "text" : "password";
+  };
+}
+
+if ($("#csRegUsername")) {
+  $("#csRegUsername").addEventListener("input", () => {
+    const raw = $("#csRegUsername").value.trim().replace(/^@+/, "").toLowerCase();
+    const msgEl = $("#csUnameCheckTxt");
+    if (!msgEl) return;
+    if (!raw) {
+      msgEl.style.color = "#93c5fd";
+      msgEl.textContent = "Must be unique (3–24 letters, numbers, or underscores).";
+      return;
+    }
+    if (raw.length < 3 || !/^[a-z0-9_\.]+$/.test(raw)) {
+      msgEl.style.color = "#fca5a5";
+      msgEl.textContent = "⚠️ Use 3–24 letters, numbers, dots, or underscores.";
+      return;
+    }
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
+    const signups = loadComingSoonSignups();
+    const takenInUsers = !!users[raw];
+    const takenInSignups = signups.some(s => (s.username || "").toLowerCase() === raw);
+    if (takenInUsers || takenInSignups) {
+      msgEl.style.color = "#fca5a5";
+      msgEl.textContent = `⚠️ Username @${raw} is already taken! Please choose another unique username.`;
+    } else {
+      msgEl.style.color = "#34d399";
+      msgEl.textContent = `✓ Username @${raw} is unique and available!`;
+    }
+  });
+}
+
+let __pendingCsSignup = null;
+
+if ($("#csSubmitSignupBtn")) {
+  $("#csSubmitSignupBtn").onclick = async () => {
+    const email = ($("#csRegEmail")?.value || "").trim().toLowerCase();
+    const uname = ($("#csRegUsername")?.value || "").trim().replace(/^@+/, "").toLowerCase();
+    const password = ($("#csRegPassword")?.value || "");
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showCsBanner("⚠️ Please enter a valid Email ID.", "err");
+      return;
+    }
+    if (!uname || uname.length < 3 || !/^[a-z0-9_\.]+$/.test(uname)) {
+      showCsBanner("⚠️ Please create a unique @username (at least 3 letters/numbers).", "err");
+      return;
+    }
+    if (!password || password.length < 6) {
+      showCsBanner("⚠️ Please set a password with at least 6 characters.", "err");
+      return;
+    }
+
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
+    const signups = loadComingSoonSignups();
+
+    if ((users[uname] && users[uname].emailVerified) || signups.some(s => (s.username || "").toLowerCase() === uname)) {
+      showCsBanner(`⚠️ Username @${uname} is already taken! Every user must have a unique username.`, "err");
+      return;
+    }
+    if (Object.values(users).some(u => (u.email || "").toLowerCase() === email && u.emailVerified) || signups.some(s => (s.email || "").toLowerCase() === email)) {
+      showCsBanner(`⚠️ Email ID ${email} is already registered! Click "Check My Assigned Coupon Code" below.`, "err");
+      return;
+    }
+
+    // Store unverified customer record so Admin App can also see and send OTP if customer has a problem
+    users[uname] = {
+      username: uname,
+      email: email,
+      password: password,
+      emailVerified: false,
+      otpVerified: false,
+      createdAt: Date.now()
+    };
+    try { localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users)); } catch (e) {}
+
+    __pendingCsSignup = { email, username: uname, password };
+    await createAndDispatchOtpEmail(email, uname, "signup", { sentBy: "customer", password: password });
+
+    const otpBox = $("#csOtpVerifyBox");
+    if (otpBox) otpBox.style.display = "block";
+    if ($("#csOtpPromptTxt")) {
+      $("#csOtpPromptTxt").innerHTML = `We dispatched a 6-digit verification OTP to <strong>${esc(email)}</strong> for <strong>@${esc(uname)}</strong> (or Admin can send it if you have trouble receiving mail). Enter the 6-digit OTP below to confirm your spot:`;
+    }
+    showCsBanner(`📨 6-Digit verification OTP sent to <strong>${esc(email)}</strong>! Enter and verify the OTP below to complete your registration.`, "info");
+  };
+}
+
+if ($("#csResendOtpBtn")) {
+  $("#csResendOtpBtn").onclick = async () => {
+    const email = __pendingCsSignup?.email || ($("#csRegEmail")?.value || "").trim().toLowerCase();
+    const uname = __pendingCsSignup?.username || ($("#csRegUsername")?.value || "").trim().replace(/^@+/, "").toLowerCase();
+    if (!email) {
+      showCsBanner("⚠️ Enter your Email ID, @Username, and Password above first.", "err");
+      return;
+    }
+    const pass = __pendingCsSignup?.password || ($("#csRegPassword")?.value || "");
+    await createAndDispatchOtpEmail(email, uname, "signup", { sentBy: "customer", password: pass, isResend: true });
+    showCsBanner(`📨 Fresh 6-digit Sign-Up OTP sent to <strong>${esc(email)}</strong>!`, "ok");
+  };
+}
+
+if ($("#csVerifyOtpBtn")) {
+  $("#csVerifyOtpBtn").onclick = async () => {
+    const email = __pendingCsSignup?.email || ($("#csRegEmail")?.value || "").trim().toLowerCase();
+    const uname = __pendingCsSignup?.username || ($("#csRegUsername")?.value || "").trim().replace(/^@+/, "").toLowerCase();
+    const password = __pendingCsSignup?.password || ($("#csRegPassword")?.value || "");
+    const enteredOtp = ($("#csOtpInput")?.value || "").trim();
+
+    if (!email || !uname || !password) {
+      showCsBanner("⚠️ Please fill out Email ID, @Username & Password and click 'Send 6-Digit OTP' first.", "err");
+      return;
+    }
+
+    const vRes = await verifyCustomerOtpCode(email, enteredOtp, ["signup", "all", "admin_support"]);
+    if (!vRes.ok) {
+      showCsBanner(vRes.reason, "err");
+      return;
+    }
+
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
+    const signups = loadComingSoonSignups();
+
+    const rank = signups.length + 1;
+    const isTop10 = rank <= 10;
+    const newSignup = {
+      id: "cs_" + Date.now(),
+      rank: rank,
+      isTop10: isTop10,
+      email: email,
+      username: uname,
+      password: password,
+      couponCode: "",
+      couponType: "",
+      signedUpAt: new Date().toLocaleString(),
+      timestamp: Date.now()
+    };
+
+    signups.push(newSignup);
+    saveComingSoonSignups(signups);
+
+    users[uname] = {
+      ...(users[uname] || {}),
+      username: uname,
+      email: email,
+      password: password,
+      emailVerified: true,
+      otpVerified: true,
+      comingSoonRank: rank,
+      createdAt: Date.now()
+    };
+    try {
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
+        username: uname,
+        email: email,
+        emailVerified: true,
+        otpVerified: true
+      }));
+    } catch (e) {}
+
+    if ($("#csOtpVerifyBox")) $("#csOtpVerifyBox").style.display = "none";
+    if ($("#csOtpInput")) $("#csOtpInput").value = "";
+    updateComingSoonCountdownTick();
+    showCsBanner(`🎉 OTP Verified! Welcome @${uname} — you are officially registered as Early Sign-Up #${rank}!`, "ok");
+
+    const rewardBox = $("#csSignupRewardBox");
+    const rankBadge = $("#csRewardRankBadge");
+    const detailsTxt = $("#csRewardDetailsTxt");
+    if (rewardBox && rankBadge && detailsTxt) {
+      rewardBox.style.display = "block";
+      rankBadge.textContent = isTop10
+        ? `🏆 CONGRATULATIONS! YOU ARE IN THE TOP 10 (RANK #${rank} OF 10)!`
+        : `✅ REGISTERED AS EARLY SIGN-UP #${rank}`;
+      detailsTxt.innerHTML = isTop10
+        ? `Your account <strong>@${esc(uname)}</strong> (${esc(email)}) is OTP-verified and locked in at <strong>Spot #${rank}</strong>! The Administrator can now see your registration in the <strong>Admin App → Coming Soon Sign-Ups Panel</strong> and assign your free Coupon Code.`
+        : `Your account <strong>@${esc(uname)}</strong> (${esc(email)}) is OTP-verified and ready for launch!`;
+    }
+  };
+}
+
+if ($("#csCheckAssignedCouponBtn")) {
+  $("#csCheckAssignedCouponBtn").onclick = () => {
+    const emailOrUname = (($("#csRegEmail")?.value || $("#csRegUsername")?.value) || "").trim().replace(/^@+/, "").toLowerCase();
+    const signups = loadComingSoonSignups();
+    let sess = null;
+    try { sess = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || "null"); } catch (e) {}
+    const lookupKey = emailOrUname || (sess && sess.username ? sess.username.toLowerCase() : "");
+    if (!lookupKey) {
+      showCsBanner("💡 Enter your registered Email ID or @Username in the box above first, then click Check My Assigned Coupon Code.", "info");
+      return;
+    }
+    const found = signups.find(s => (s.email || "").toLowerCase() === lookupKey || (s.username || "").toLowerCase() === lookupKey);
+    if (!found) {
+      showCsBanner(`⚠️ No Coming Soon registration found for "${lookupKey}". Fill in Email, @Username & Password above to sign up!`, "err");
+      return;
+    }
+    const rewardBox = $("#csSignupRewardBox");
+    const rankBadge = $("#csRewardRankBadge");
+    const detailsTxt = $("#csRewardDetailsTxt");
+    if (rewardBox && rankBadge && detailsTxt) {
+      rewardBox.style.display = "block";
+      rankBadge.textContent = `🏆 EARLY SIGN-UP #${found.rank} (@${found.username})`;
+      if (found.couponCode) {
+        detailsTxt.innerHTML = `🎁 <strong>Admin Assigned Your Free Coupon Code:</strong> <code style="background:#0284c7;color:#fff;padding:3px 9px;border-radius:6px;font-weight:800;font-size:.9rem">${esc(found.couponCode)}</code><br><small style="color:#bae6fd">Save this code! Once the site goes live, select any ${(found.couponType === "video") ? "Premium Video (1x Free Unlock)" : "Premium Template (2x Free Unlocks)"} and apply this code to unlock without watching ads!</small>`;
+        try { localStorage.setItem("templates_last_used_coupon", found.couponCode); } catch (e) {}
+      } else {
+        detailsTxt.innerHTML = `You are registered at <strong>Rank #${found.rank}</strong> (${esc(found.email)}). Your free Top 10 coupon code will appear here as soon as the Admin clicks <strong>Assign Coupon</strong> in the Admin App!`;
+      }
+    }
+    showCsBanner(found.couponCode ? `🎉 Your assigned coupon code is ${found.couponCode}!` : `⏳ Spot #${found.rank} confirmed! Awaiting Admin coupon assignment.`, "ok");
+  };
+}
 
 // Welcome Gate Interactive Buttons
 if ($("#gateTopLoginBtn")) $("#gateTopLoginBtn").onclick = () => openAuthModal("login");
@@ -10499,19 +11833,26 @@ function renderAdminDashboard() {
     $("#admCustomersTbody").innerHTML = filteredUsers.map(u => {
       const uPurchases = ledger.filter(p => p.username === u.username);
       const uAdsCount = uPurchases.reduce((a, p) => a + (Number(p.adsWatched) || 0), 0);
+      const otpStore = loadOtpStore();
+      const otpRec = otpStore[(u.email || "").toLowerCase()] || otpStore["@" + (u.username || "").toLowerCase()];
+      const activeOtpStr = (otpRec && !otpRec.verified) ? otpRec.otp : (u.lastOtpCode || "");
       const statusBadge = u.banned
         ? `<span style="background:rgba(220,38,38,0.14);color:#dc2626;padding:3px 8px;border-radius:99px;font-weight:800;font-size:.7rem">🚫 BANNED (${esc(u.banReason || "Violation")})</span>`
         : (u.emailVerified
-            ? `<span style="background:rgba(16,185,129,0.14);color:#059669;padding:3px 8px;border-radius:99px;font-weight:800;font-size:.7rem">✓ Verified Active</span>`
-            : `<span style="background:rgba(245,158,11,0.15);color:#d97706;padding:3px 8px;border-radius:99px;font-weight:800;font-size:.7rem">⏳ Pending Email Link</span>`);
+            ? `<span style="background:rgba(16,185,129,0.14);color:#059669;padding:3px 8px;border-radius:99px;font-weight:800;font-size:.7rem">✓ OTP Verified Active</span>`
+            : `<span style="background:rgba(245,158,11,0.15);color:#d97706;padding:3px 8px;border-radius:99px;font-weight:800;font-size:.7rem">⏳ Pending 6-Digit OTP</span>`);
+      const otpBadgeHtml = activeOtpStr
+        ? `<div style="margin-top:4px;font-size:.72rem"><span style="background:rgba(14,165,233,0.15);color:#0284c7;padding:2px 7px;border-radius:6px;font-weight:800;font-family:monospace">🔢 OTP: ${esc(activeOtpStr)}</span></div>`
+        : "";
       return `<tr>
         <td><strong>@${esc(u.username)}</strong></td>
-        <td>${esc(u.email)}</td>
+        <td>${esc(u.email)}${u.pendingNewEmail ? `<br><small style="color:#0284c7">→ New: ${esc(u.pendingNewEmail)}</small>` : ""}</td>
         <td><code>${esc(u.password || "••••••")}</code></td>
-        <td>${statusBadge}</td>
+        <td>${statusBadge}${otpBadgeHtml}</td>
         <td>${uAdsCount} ads watched</td>
         <td>
           <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="copy-mini" data-admsendotp="${esc(u.username)}" type="button" style="color:#0284c7;border-color:#38bdf8">📨 Send OTP to Mail</button>
             <button class="copy-mini" data-admfill="${esc(u.username)}" type="button">🔑 Recover</button>
             <button class="copy-mini" data-admtoggleban="${esc(u.username)}" type="button" style="color:${u.banned ? "#059669" : "#dc2626"}">
               ${u.banned ? "✅ Unban" : "🚫 Ban"}
@@ -10629,28 +11970,60 @@ if ($("#admPurchaseSearchInp")) $("#admPurchaseSearchInp").oninput = renderAdmin
 if ($("#admTplSearchInp")) $("#admTplSearchInp").oninput = renderAdminDashboard;
 if ($("#admTplFilterSel")) $("#admTplFilterSel").onchange = renderAdminDashboard;
 
+function showEmbAdmOtpBanner(msg) {
+  const b = $("#admOtpDispatchBanner");
+  if (!b) return;
+  b.className = "auth-status-banner show ok";
+  b.innerHTML = msg;
+}
+
+if ($("#admSendOtpToMailBtn")) {
+  $("#admSendOtpToMailBtn").onclick = async () => {
+    const unameRaw = ($("#admRecUsername")?.value || "").trim().replace(/^@/, "").toLowerCase();
+    const emailRaw = ($("#admRecNewEmail")?.value || "").trim().toLowerCase();
+    const purpose = ($("#admRecOtpPurpose")?.value || "all");
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
+    const uRec = (unameRaw && users[unameRaw]) ? users[unameRaw] : Object.values(users).find(u => (u.email || "").toLowerCase() === emailRaw);
+    const targetEmail = emailRaw || (uRec && uRec.email) || "";
+    const targetUname = unameRaw || (uRec && uRec.username) || (targetEmail ? targetEmail.split("@")[0] : "");
+    if (!targetEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(targetEmail)) {
+      showToast("⚠️ Enter a valid customer Email ID or existing @username first.");
+      return;
+    }
+    const res = await createAndDispatchOtpEmail(targetEmail, targetUname, purpose, { sentBy: "admin", newEmail: emailRaw });
+    renderAdminDashboard();
+    showEmbAdmOtpBanner(`📨 <strong>Admin Dispatched 6-Digit OTP to ${esc(targetEmail)} (@${esc(targetUname)})!</strong><br>Active 6-Digit OTP Code: <code style="font-size:1rem;font-weight:800;padding:2px 8px;border-radius:6px;background:#0284c7;color:#fff">${esc(res.otp)}</code> (Valid for Sign-Up, Reset Password, Change Email &amp; Login).`);
+    showToast(`📨 Sent 6-Digit OTP (${res.otp}) to ${targetEmail}!`);
+  };
+}
+
 // Account Recovery (Change Email & Password)
 if ($("#admApplyRecoveryBtn")) {
-  $("#admApplyRecoveryBtn").onclick = () => {
+  $("#admApplyRecoveryBtn").onclick = async () => {
     const uname = ($("#admRecUsername")?.value || "").trim().replace(/^@/, "").toLowerCase();
     const newEmail = ($("#admRecNewEmail")?.value || "").trim().toLowerCase();
     const newPass = ($("#admRecNewPass")?.value || "").trim();
-    if (!uname) {
-      showToast("⚠️ Enter a target @username to recover");
+    if (!uname && !newEmail) {
+      showToast("⚠️ Enter a target @username or Email ID to recover");
       return;
     }
     let users = {};
     try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (e) {}
-    if (!users[uname]) {
-      showToast(`⚠️ Customer @${uname} not found`);
+    const targetKey = (uname && users[uname]) ? uname : Object.keys(users).find(k => (users[k].email || "").toLowerCase() === newEmail);
+    if (!targetKey || !users[targetKey]) {
+      showToast(`⚠️ Customer account not found`);
       return;
     }
-    if (newEmail) users[uname].email = newEmail;
-    if (newPass) users[uname].password = newPass;
-    users[uname].emailVerified = true;
+    if (newEmail) users[targetKey].email = newEmail;
+    if (newPass) users[targetKey].password = newPass;
+    users[targetKey].emailVerified = true;
+    users[targetKey].otpVerified = true;
     try { localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users)); } catch (e) {}
+    const otpRes = await createAndDispatchOtpEmail(users[targetKey].email, targetKey, "all", { sentBy: "admin" });
     renderAdminDashboard();
-    showToast(`🔑 Recovered @${uname}! Updated Email/Password saved.`);
+    showEmbAdmOtpBanner(`🔑 <strong>Recovered @${esc(targetKey)} (${esc(users[targetKey].email)})!</strong> Updated credentials &amp; dispatched 6-Digit OTP: <code style="font-weight:800;background:#0284c7;color:#fff;padding:2px 8px;border-radius:6px">${esc(otpRes.otp)}</code>`);
+    showToast(`🔑 Recovered @${targetKey} & sent OTP (${otpRes.otp})!`);
   };
 }
 
@@ -10683,7 +12056,23 @@ if ($("#admUnbanByUnameBtn")) {
 }
 
 if ($("#admCustomersTbody")) {
-  $("#admCustomersTbody").onclick = e => {
+  $("#admCustomersTbody").onclick = async e => {
+    const otpBtn = e.target.closest("[data-admsendotp]");
+    if (otpBtn) {
+      const uname = otpBtn.dataset.admsendotp;
+      let users = {};
+      try { users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "{}"); } catch (err) {}
+      const u = users[uname];
+      if (u && u.email) {
+        if ($("#admRecUsername")) $("#admRecUsername").value = uname;
+        if ($("#admRecNewEmail")) $("#admRecNewEmail").value = u.email;
+        const res = await createAndDispatchOtpEmail(u.email, uname, "all", { sentBy: "admin" });
+        renderAdminDashboard();
+        showEmbAdmOtpBanner(`📨 <strong>6-Digit OTP Sent to ${esc(u.email)} (@${esc(uname)})!</strong> Code: <code style="font-size:1rem;font-weight:800;padding:2px 8px;border-radius:6px;background:#0284c7;color:#fff">${esc(res.otp)}</code>`);
+        showToast(`📨 Sent 6-Digit OTP (${res.otp}) to ${u.email}!`);
+      }
+      return;
+    }
     const fillBtn = e.target.closest("[data-admfill]");
     if (fillBtn) {
       const uname = fillBtn.dataset.admfill;
@@ -10827,7 +12216,7 @@ if ($("#aiCopySummaryBtn")) {
 updateAiBrandUI();
 
 // ============================================================================
-// UI HANDLERS FOR FIREBASE AUTHENTICATION (REGISTER, EMAIL LINK, LOGIN, FORGOT)
+// UI HANDLERS FOR STRICT 6-DIGIT OTP AUTHENTICATION (SIGN UP, LOGIN, FORGOT PASSWORD, CHANGE EMAIL)
 // ============================================================================
 function showAuthBanner(msg, type) {
   const b = $("#authStatusBanner");
@@ -10842,13 +12231,42 @@ function showAuthBanner(msg, type) {
 }
 
 function switchAuthTab(tabName) {
-  ["login", "register", "forgot"].forEach(k => {
+  const activeTab = ["login", "register", "forgot", "changeemail"].includes(tabName) ? tabName : "register";
+  ["login", "register", "forgot", "changeemail"].forEach(k => {
     const btn = document.querySelector(`[data-authtab="${k}"]`);
-    if (btn) btn.classList.toggle("on", k === tabName);
+    if (btn) btn.classList.toggle("on", k === activeTab);
   });
-  if ($("#authViewLogin")) $("#authViewLogin").style.display = tabName === "login" ? "block" : "none";
-  if ($("#authViewRegister")) $("#authViewRegister").style.display = tabName === "register" ? "block" : "none";
-  if ($("#authViewForgot")) $("#authViewForgot").style.display = tabName === "forgot" ? "block" : "none";
+  if ($("#authViewLogin")) $("#authViewLogin").style.display = activeTab === "login" ? "block" : "none";
+  if ($("#authViewRegister")) $("#authViewRegister").style.display = activeTab === "register" ? "block" : "none";
+  if ($("#authViewForgot")) $("#authViewForgot").style.display = activeTab === "forgot" ? "block" : "none";
+  if ($("#authViewChangeEmail")) $("#authViewChangeEmail").style.display = activeTab === "changeemail" ? "block" : "none";
+
+  const headTitle = $("#authModalHeadTitle");
+  const headSub = $("#authModalHeadSub");
+  if (headTitle && headSub) {
+    if (activeTab === "register") {
+      headTitle.textContent = "Sign Up for Templates";
+      headSub.textContent = "Create Account · 6-Digit Sign-Up OTP Verification";
+    } else if (activeTab === "forgot") {
+      headTitle.textContent = "Reset Your Password";
+      headSub.textContent = "Account Recovery · 6-Digit Password Reset OTP";
+    } else if (activeTab === "changeemail") {
+      headTitle.textContent = "Change Email Address";
+      headSub.textContent = "Account Security · 6-Digit Change Email OTP";
+    } else {
+      headTitle.textContent = "Welcome to Templates";
+      headSub.textContent = "6-Digit Email OTP Verified Access · 240+ Templates & 56+ Videos";
+    }
+  }
+
+  if (activeTab === "changeemail") {
+    try {
+      const sess = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || "null");
+      if (sess && sess.email && $("#changeEmailIdentifier") && !$("#changeEmailIdentifier").value) {
+        $("#changeEmailIdentifier").value = sess.email;
+      }
+    } catch (e) {}
+  }
   showAuthBanner("", "info");
 }
 
@@ -10860,11 +12278,14 @@ window.openAuthModal = openAuthModal;
 
 if ($("#openLoginBtn")) $("#openLoginBtn").onclick = () => openAuthModal("login");
 if ($("#openRegisterBtn")) $("#openRegisterBtn").onclick = () => openAuthModal("register");
+if ($("#navChangeEmailBtn")) $("#navChangeEmailBtn").onclick = () => openAuthModal("changeemail");
 if ($("#authModalCloseTop")) $("#authModalCloseTop").onclick = () => $("#firebaseAuthModal").classList.remove("show");
 if ($("#authCloseBtn1")) $("#authCloseBtn1").onclick = () => $("#firebaseAuthModal").classList.remove("show");
 if ($("#authCloseBtn2")) $("#authCloseBtn2").onclick = () => $("#firebaseAuthModal").classList.remove("show");
 if ($("#gotoForgotFromLoginBtn")) $("#gotoForgotFromLoginBtn").onclick = () => switchAuthTab("forgot");
+if ($("#gotoChangeEmailFromLoginBtn")) $("#gotoChangeEmailFromLoginBtn").onclick = () => switchAuthTab("changeemail");
 if ($("#backToLoginBtn")) $("#backToLoginBtn").onclick = () => switchAuthTab("login");
+if ($("#backToLoginFromChangeEmailBtn")) $("#backToLoginFromChangeEmailBtn").onclick = () => switchAuthTab("login");
 if ($("#authTabsBar")) {
   $("#authTabsBar").onclick = e => {
     const b = e.target.closest("[data-authtab]");
@@ -10883,88 +12304,182 @@ if ($("#toggleRegPassBtn")) {
     if (inp) inp.type = inp.type === "password" ? "text" : "password";
   };
 }
+if ($("#toggleForgotPassBtn")) {
+  $("#toggleForgotPassBtn").onclick = () => {
+    const inp = $("#forgotNewPassword");
+    if (inp) inp.type = inp.type === "password" ? "text" : "password";
+  };
+}
+if ($("#toggleChangeEmailPassBtn")) {
+  $("#toggleChangeEmailPassBtn").onclick = () => {
+    const inp = $("#changeEmailPassword");
+    if (inp) inp.type = inp.type === "password" ? "text" : "password";
+  };
+}
 
 </script>
 
-<!-- FIREBASE v13.2.0 CONFIGURATION + UNIQUE USERNAME, EMAIL LINK VERIFICATION, LOGIN & PASSWORD RESET -->
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword as _createUserWithEmailAndPassword,
-    signInWithEmailAndPassword as _signInWithEmailAndPassword,
-    sendEmailVerification as _sendEmailVerification,
-    sendPasswordResetEmail as _sendPasswordResetEmail,
-    sendSignInLinkToEmail as _sendSignInLinkToEmail,
-    isSignInWithEmailLink,
-    signInWithEmailLink,
-    applyActionCode,
-    updateProfile,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc as _getDoc,
-    setDoc as _setDoc,
-    deleteDoc as _deleteDoc,
-    runTransaction as _runTransaction,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<!-- SUPABASE SDK v2.49.1 & REST v1 STRICT 6-DIGIT EMAIL OTP AUTHENTICATION & CLOUD SYNC -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  const SUPABASE_URL = "https://nujhenrphkjhiugnridb.supabase.co";
+  const SUPABASE_REST_URL = "https://nujhenrphkjhiugnridb.supabase.co/rest/v1/";
+  const SUPABASE_KEY = "sb_publishable_IrEFnW4Ri517sH06G8sBtA_2KioE7Tm";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDZhwFvYxFvJbtXfx6Y-6yid61Zx7b835U",
-    authDomain: "templetegryxcell.firebaseapp.com",
-    projectId: "templetegryxcell",
-    storageBucket: "templetegryxcell.firebasestorage.app",
-    messagingSenderId: "479346967243",
-    appId: "1:479346967243:web:ed4b0d7bef7d3e3f6ad14e",
-    measurementId: "G-BF59PLH3BE"
-  };
-
-  // Initialize Firebase
-  
-  const TO = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error("timeout"), { code: "app/timeout" })), ms || 5000))]);
-  const getDoc = (...a) => TO(_getDoc(...a), 4000);
-  const setDoc = (...a) => TO(_setDoc(...a), 6000);
-  const createUserWithEmailAndPassword = (...a) => TO(_createUserWithEmailAndPassword(...a), 15000);
-  const signInWithEmailAndPassword = (...a) => TO(_signInWithEmailAndPassword(...a), 15000);
-  const sendEmailVerification = (...a) => TO(_sendEmailVerification(...a), 15000);
-  const sendPasswordResetEmail = (...a) => TO(_sendPasswordResetEmail(...a), 15000);
-  const sendSignInLinkToEmail = (...a) => TO(_sendSignInLinkToEmail(...a), 15000);
-  const app = initializeApp(firebaseConfig);
-  let analytics = null;
+  let supabaseClient = null;
   try {
-    analytics = getAnalytics(app);
-  } catch (e) {}
-  const auth = getAuth(app);
-  let db = null;
-  try {
-    db = getFirestore(app);
+    if (window.supabase && typeof window.supabase.createClient === "function") {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
   } catch (e) {}
 
-  // Synchronized Unique Username Registry (Firestore 'usernames/{uname}' + Local Storage Mirror)
+  window.__supabaseClient = supabaseClient;
+  window.__supabaseRestUrl = SUPABASE_REST_URL;
+  window.__supabaseKey = SUPABASE_KEY;
+
   const LOCAL_USERS_KEY = "gryxcell_firebase_users_v1";
   const LOCAL_SESSION_KEY = "gryxcell_active_session_v1";
 
-  function getLocalRegistry() {
+  // Attach 6-digit normalizer & paste handler to all OTP inputs (if an 8-digit Supabase token is pasted, slices to 6 digits in UI while preserving full token for Supabase verification)
+  ["regOtpInput", "loginOtpInput", "forgotOtpInput", "changeEmailOtpInput", "csOtpInput"].forEach(inpId => {
+    const el = document.getElementById(inpId);
+    if (!el) return;
+    el.addEventListener("paste", e => {
+      const pasted = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+      const digits = pasted.replace(/\D+/g, "");
+      if (digits.length >= 6) {
+        e.preventDefault();
+        window.__lastPastedRawOtpToken = digits;
+        el.dataset.rawSupabaseToken = digits;
+        el.value = digits.slice(0, 6);
+      }
+    });
+    el.addEventListener("input", () => {
+      const digits = el.value.replace(/\D+/g, "");
+      if (digits.length > 6) {
+        window.__lastPastedRawOtpToken = digits;
+        el.dataset.rawSupabaseToken = digits;
+      }
+      const clean6 = digits.slice(0, 6);
+      if (el.value !== clean6) el.value = clean6;
+    });
+  });
+
+  // Dispatch 6-Digit Email OTP via Supabase Auth (strictly separated by purpose so Sign-Up ONLY triggers Confirm Sign-Up template)
+  window.__dispatchSupabaseEmailOtp = async function(email, purpose, meta) {
+    if (!supabaseClient || !email) return { sent: false };
+    const sixDigitOtp = String((meta && meta.otp) || "").replace(/\D+/g, "").slice(0, 6);
+    const uname = (meta && meta.username) || email.split("@")[0];
+    const metaData = {
+      username: uname,
+      otp_code: sixDigitOtp,
+      otp: sixDigitOtp,
+      token_6: sixDigitOtp,
+      six_digit_otp: sixDigitOtp,
+      purpose: purpose || "signup",
+      email_template: purpose === "reset_password" ? "reset_password" : (purpose === "change_email" ? "change_email" : (purpose === "login" ? "login" : "signup"))
+    };
     try {
-      return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "{}");
-    } catch (e) {
-      return {};
+      if (purpose === "reset_password") {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+        return { sent: !error };
+      }
+      if (purpose === "change_email") {
+        const { data, error } = await supabaseClient.auth.updateUser({
+          email: email,
+          data: metaData
+        });
+        if (!error) {
+          return { sent: true, userId: (data && data.user && data.user.id) || "" };
+        }
+        const { error: resErr } = await supabaseClient.auth.resend({
+          type: "email_change",
+          email: email
+        });
+        return { sent: !resErr };
+      }
+      if (purpose === "login") {
+        const { data, error } = await supabaseClient.auth.signInWithOtp({
+          email: email,
+          options: {
+            shouldCreateUser: false,
+            data: metaData
+          }
+        });
+        return { sent: !error, userId: (data && data.user && data.user.id) || "" };
+      }
+
+      // SIGN-UP FLOW (purpose === "signup" or default): strictly trigger ONLY Supabase Confirm Sign-Up template!
+      const signupPassword = (meta && meta.password) || ("GryxSign#" + (sixDigitOtp || "654321"));
+      if (meta && meta.isResend) {
+        const { error: resendFirstErr } = await supabaseClient.auth.resend({
+          type: "signup",
+          email: email
+        });
+        if (!resendFirstErr) return { sent: true };
+      }
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: signupPassword,
+        options: {
+          data: metaData
+        }
+      });
+      if (!error && data && (!data.user || !Array.isArray(data.user.identities) || data.user.identities.length > 0)) {
+        return { sent: true, userId: (data.user && data.user.id) || "" };
+      }
+      const { error: resendErr } = await supabaseClient.auth.resend({
+        type: "signup",
+        email: email
+      });
+      return { sent: !resendErr, userId: (data && data.user && data.user.id) || "" };
+    } catch (e) {}
+    return { sent: false };
+  };
+
+  // Verify 6-Digit Email OTP via Supabase Auth (verifyOtp across token types, supporting both 6-digit and pasted Supabase tokens)
+  window.__verifySupabaseEmailOtp = async function(email, otpToken, purpose, rawFullTokenOptional) {
+    if (!supabaseClient || !email) return false;
+    const clean6 = String(otpToken || "").replace(/\D+/g, "").slice(0, 6);
+    if (clean6.length !== 6) return false;
+    const candidateTokens = [clean6];
+    const extraRaw = String(rawFullTokenOptional || "").replace(/\D+/g, "");
+    if (extraRaw.length > 6 && extraRaw.startsWith(clean6) && !candidateTokens.includes(extraRaw)) {
+      candidateTokens.push(extraRaw);
     }
+    const typesToTry = purpose === "signup"
+      ? ["signup", "email"]
+      : (purpose === "reset_password"
+          ? ["recovery", "email"]
+          : (purpose === "change_email"
+              ? ["email_change", "email"]
+              : ["email", "magiclink", "signup"]));
+    for (let tIdx = 0; tIdx < candidateTokens.length; tIdx++) {
+      const tok = candidateTokens[tIdx];
+      for (let i = 0; i < typesToTry.length; i++) {
+        try {
+          const { data, error } = await supabaseClient.auth.verifyOtp({
+            email: email,
+            token: tok,
+            type: typesToTry[i]
+          });
+          if (!error && data && (data.session || data.user)) {
+            return true;
+          }
+        } catch (e) {}
+      }
+    }
+    return false;
+  };
+
+  function getLocalRegistry() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "{}"); } catch (e) { return {}; }
   }
   function saveLocalRegistry(reg) {
-    try {
-      localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(reg));
-    } catch (e) {}
+    try { localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(reg)); } catch (e) {}
+    try { if (typeof window.__pushUsersRegistryToCloud === "function") window.__pushUsersRegistryToCloud(reg); } catch (e) {}
   }
-
   function normalizeUsername(raw) {
     return String(raw || "").trim().replace(/^@+/, "").toLowerCase();
   }
@@ -10975,147 +12490,10 @@ if ($("#toggleRegPassBtn")) {
       return { valid: false, available: false, reason: "Use 3–24 letters, numbers, dots, or underscores." };
     }
     const localReg = getLocalRegistry();
-    if (localReg[clean]) {
+    if (localReg[clean] && localReg[clean].emailVerified) {
       return { valid: true, available: false, reason: `Username @${clean} is already taken. Please pick another unique username.` };
     }
-    if (db) {
-      try {
-        const snap = await getDoc(doc(db, "usernames", clean));
-        if (snap.exists()) {
-          return { valid: true, available: false, reason: `Username @${clean} is already taken.` };
-        }
-        const usnap = await getDoc(doc(db, "users", clean));
-        if (usnap.exists()) {
-          return { valid: true, available: false, reason: `Username @${clean} is already taken.` };
-        }
-      } catch (e) {
-        // Firestore rules or offline mode fallback uses localReg seamlessly
-      }
-    }
     return { valid: true, available: true, reason: `✓ Username @${clean} is unique and available!` };
-  }
-
-  // Firebase Identity Toolkit REST API helpers (works 100% in Chrome even on file:// protocol!)
-  const AUTH_REST_BASE = `https://identitytoolkit.googleapis.com/v1`;
-  const FIRESTORE_DOC_BASE = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents`;
-  const SAFE_CONTINUE_URL = (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ? window.location.href.split("?")[0]
-    : `https://${firebaseConfig.authDomain}/`;
-
-  async function restAuthSignUp(email, password, displayName) {
-    const res = await fetch(`${AUTH_REST_BASE}/accounts:signUp?key=${firebaseConfig.apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, displayName, returnSecureToken: true })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const msg = data?.error?.message || "SIGNUP_FAILED";
-      throw Object.assign(new Error(msg), { code: msg });
-    }
-    return data; // { idToken, email, localId, refreshToken }
-  }
-
-  async function restAuthSignIn(email, password) {
-    const res = await fetch(`${AUTH_REST_BASE}/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, returnSecureToken: true })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const msg = data?.error?.message || "SIGNIN_FAILED";
-      throw Object.assign(new Error(msg), { code: msg });
-    }
-    return data; // { idToken, email, displayName, localId }
-  }
-
-  async function restAuthLookup(idToken) {
-    const res = await fetch(`${AUTH_REST_BASE}/accounts:lookup?key=${firebaseConfig.apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken })
-    });
-    const data = await res.json();
-    return data?.users?.[0] || null;
-  }
-
-  async function restSendOobEmail(payload) {
-    const res = await fetch(`${AUTH_REST_BASE}/accounts:sendOobCode?key=${firebaseConfig.apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const msg = data?.error?.message || "SEND_OOB_FAILED";
-      throw Object.assign(new Error(msg), { code: msg });
-    }
-    return data;
-  }
-
-  async function dispatchVerificationAndLoginEmails(email, idToken) {
-    let sentAny = false;
-    let lastErr = "";
-
-    // 1. If we have an idToken, send standard VERIFY_EMAIL via Firebase REST API (no continueUrl needed, never fails on file://!)
-    if (idToken) {
-      try {
-        await restSendOobEmail({ requestType: "VERIFY_EMAIL", idToken });
-        sentAny = true;
-      } catch (e) {
-        lastErr = e?.message || "";
-      }
-    }
-
-    // 2. Also attempt EMAIL_SIGNIN magic link via REST API with authorized domain continueUrl
-    try {
-      await restSendOobEmail({
-        requestType: "EMAIL_SIGNIN",
-        email: email,
-        continueUrl: `${SAFE_CONTINUE_URL}?gryxcellVerifyEmail=${encodeURIComponent(email)}`,
-        canHandleCodeInApp: true
-      });
-      localStorage.setItem("gryxcell_email_for_signin", email);
-      sentAny = true;
-    } catch (e) {
-      if (!lastErr) lastErr = e?.message || "";
-    }
-
-    // 3. Also try Firebase JS SDK sendEmailVerification WITHOUT actionCodeSettings (uses default Firebase template)
-    if (auth && auth.currentUser) {
-      try {
-        await sendEmailVerification(auth.currentUser);
-        sentAny = true;
-      } catch (e) {}
-    }
-
-    return { sentAny, lastErr };
-  }
-
-  // Reserves a @username for ONE account quickly (max 2s wait) with REST fallback.
-  async function reserveUsername(uname, email) {
-    const isTakenDoc = d => d && d.exists() && String(d.data().email || "").toLowerCase() !== email;
-    const quickTimeout = (p, ms = 1800) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
-    if (db) {
-      try {
-        const ref = doc(db, "usernames", uname);
-        const a = await quickTimeout(_getDoc(ref), 1800);
-        if (isTakenDoc(a)) return { taken: true };
-        await quickTimeout(_setDoc(ref, { username: uname, email: email, createdAt: Date.now() }), 1800);
-        return { ok: true };
-      } catch (e) {}
-    }
-    // REST check fallback
-    try {
-      const res = await quickTimeout(fetch(`${FIRESTORE_DOC_BASE}/usernames/${encodeURIComponent(uname)}?key=${firebaseConfig.apiKey}`), 1800);
-      if (res.ok) {
-        const docData = await res.json();
-        const existingEmail = (docData?.fields?.email?.stringValue || "").toLowerCase();
-        if (existingEmail && existingEmail !== email) return { taken: true };
-      }
-    } catch (e) {}
-    return { ok: true };
   }
 
   async function resolveUsernameOrEmail(identifier) {
@@ -11130,32 +12508,16 @@ if ($("#toggleRegPassBtn")) {
     if (localReg[clean] && localReg[clean].email) {
       return { email: localReg[clean].email, username: clean, record: localReg[clean] };
     }
-    if (db) {
-      try {
-        const snap = await getDoc(doc(db, "usernames", clean));
-        if (snap.exists() && snap.data().email) {
-          return { email: snap.data().email, username: clean, record: snap.data() };
-        }
-      } catch (e) {}
-    }
-    try {
-      const res = await fetch(`${FIRESTORE_DOC_BASE}/usernames/${encodeURIComponent(clean)}?key=${firebaseConfig.apiKey}`);
-      if (res.ok) {
-        const data = await res.json();
-        const em = data?.fields?.email?.stringValue;
-        if (em) return { email: em.toLowerCase(), username: clean, record: { username: clean, email: em.toLowerCase() } };
-      }
-    } catch (e) {}
-    return { email: null, username: clean };
+    return { email: null, username: clean, record: null };
   }
 
   function updateSignedInHeaderUI(userObj) {
     const outBtns = document.getElementById("navLoggedOutBtns");
     const inPill = document.getElementById("navLoggedInPill");
     const uTxt = document.getElementById("navUsernameTxt");
-    if (userObj && userObj.emailVerified) {
+    if (userObj && userObj.emailVerified && userObj.otpVerified !== false) {
       const regCheck = getLocalRegistry();
-      const uClean = normalizeUsername(userObj.username || userObj.displayName || (userObj.email ? userObj.email.split("@")[0] : "user"));
+      const uClean = normalizeUsername(userObj.username || userObj.name || (userObj.email ? userObj.email.split("@")[0] : "user"));
       if (regCheck[uClean] && regCheck[uClean].banned) {
         if (typeof showAuthBanner === "function") {
           showAuthBanner(`🚫 Account @${uClean} has been banned by the Administrator (${regCheck[uClean].banReason || "Policy Violation"}).`, "err");
@@ -11164,14 +12526,15 @@ if ($("#toggleRegPassBtn")) {
       }
       if (outBtns) outBtns.style.display = "none";
       if (inPill) inPill.style.display = "flex";
-      const uname = userObj.username || userObj.displayName || (userObj.email ? userObj.email.split("@")[0] : "user");
+      const uname = userObj.username || userObj.name || (userObj.email ? userObj.email.split("@")[0] : "user");
       if (uTxt) uTxt.textContent = `@${normalizeUsername(uname)} ✓`;
       try {
         localStorage.removeItem("gryxcell_explicit_logout");
         localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify({
           username: normalizeUsername(uname),
           email: userObj.email,
-          emailVerified: true
+          emailVerified: true,
+          otpVerified: true
         }));
       } catch (e) {}
     } else {
@@ -11184,82 +12547,26 @@ if ($("#toggleRegPassBtn")) {
   }
 
   let pendingRegistration = null;
+  let pendingLoginTarget = null;
+  let pendingForgotTarget = null;
+  let pendingChangeEmailTarget = null;
 
-  async function checkIncomingEmailVerificationLink() {
-    const params = new URLSearchParams(window.location.search);
-    const mode = params.get("mode");
-    const oobCode = params.get("oobCode");
-    const verifyEmailParam = params.get("gryxcellVerifyEmail");
-
-    if (mode === "verifyEmail" && oobCode) {
-      try {
-        await applyActionCode(auth, oobCode);
-        if (auth.currentUser) await auth.currentUser.reload();
-        if (typeof showToast === "function") showToast("🎉 Email Link Verified! You are now signed up & logged in!");
-      } catch (e) {}
-    }
-
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      let emailForLink = "";
-      try { emailForLink = localStorage.getItem("gryxcell_email_for_signin") || ""; } catch (e) {}
-      if (emailForLink) {
-        try {
-          const res = await signInWithEmailLink(auth, emailForLink, window.location.href);
-          updateSignedInHeaderUI({
-            email: res.user.email,
-            displayName: res.user.displayName,
-            emailVerified: true
-          });
-          if (typeof showToast === "function") showToast("🎉 Signed up & logged in via Email Link!");
-        } catch (e) {}
-      }
-    }
-
-    if (verifyEmailParam) {
-      const reg = getLocalRegistry();
-      const emLow = verifyEmailParam.toLowerCase();
-      let uKey = Object.keys(reg).find(k => (reg[k].email || "").toLowerCase() === emLow);
-      if (!uKey) {
-        uKey = normalizeUsername(emLow.split("@")[0]);
-        reg[uKey] = { username: uKey, email: emLow, emailVerified: true, createdAt: Date.now() };
-      } else {
-        reg[uKey].emailVerified = true;
-      }
-      saveLocalRegistry(reg);
-      updateSignedInHeaderUI(reg[uKey]);
-      if (typeof showToast === "function") showToast(`🎉 Email Link Verified for @${uKey}! You are now logged in!`);
-    }
-
+  function checkSavedVerifiedSession() {
     try {
+      const explicitOut = localStorage.getItem("gryxcell_explicit_logout") === "1";
+      if (explicitOut) return;
       const savedSess = JSON.parse(localStorage.getItem(LOCAL_SESSION_KEY) || "null");
-      if (savedSess && savedSess.emailVerified) {
-        updateSignedInHeaderUI(savedSess);
+      const reg = getLocalRegistry();
+      if (savedSess && savedSess.emailVerified && savedSess.otpVerified !== false) {
+        const uRec = savedSess.username ? reg[savedSess.username] : null;
+        if (!uRec || (uRec.emailVerified && !uRec.banned)) {
+          updateSignedInHeaderUI(uRec || savedSess);
+        }
       }
     } catch (e) {}
   }
 
-  onAuthStateChanged(auth, async user => {
-    if (!user) return;
-    if (!user.emailVerified) {
-      try { await user.reload(); } catch (e) {}
-    }
-    const reg = getLocalRegistry();
-    const uKey = Object.keys(reg).find(k => (reg[k].email || "").toLowerCase() === (user.email || "").toLowerCase());
-    if (user.emailVerified || (uKey && reg[uKey].emailVerified)) {
-      if (uKey && !reg[uKey].emailVerified) {
-        reg[uKey].emailVerified = true;
-        saveLocalRegistry(reg);
-      }
-      updateSignedInHeaderUI({
-        username: (uKey || user.displayName || (user.email ? user.email.split("@")[0] : "user")),
-        email: user.email,
-        displayName: user.displayName,
-        emailVerified: true
-      });
-    }
-  });
-
-  checkIncomingEmailVerificationLink();
+  checkSavedVerifiedSession();
 
   const regUsernameInput = document.getElementById("regUsername");
   const unameBadge = document.getElementById("usernameStatusBadge");
@@ -11283,7 +12590,9 @@ if ($("#toggleRegPassBtn")) {
     });
   }
 
-  // REGISTER SUBMIT: Unique Username + Email ID + Password + Registration Link (SDK + REST API)
+  // ==========================================================================
+  // 1. SIGN UP: SEND 6-DIGIT OTP & STRICT OTP VERIFICATION (NO LINK BYPASS)
+  // ==========================================================================
   const submitRegisterBtn = document.getElementById("submitRegisterBtn");
   if (submitRegisterBtn) {
     submitRegisterBtn.addEventListener("click", async () => {
@@ -11298,13 +12607,13 @@ if ($("#toggleRegPassBtn")) {
         return;
       }
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showAuthBanner("⚠️ Please enter a valid Email ID so we can send your registration link.", "err");
+        showAuthBanner("⚠️ Please enter a valid Email ID so we can send your 6-digit Sign-Up OTP.", "err");
         return;
       }
       const regMap = getLocalRegistry();
-      const existingEmailUser = Object.values(regMap).find(u => u.email === email && u.emailVerified);
+      const existingEmailUser = Object.values(regMap).find(u => (u.email || "").toLowerCase() === email && u.emailVerified);
       if (existingEmailUser) {
-        showAuthBanner("⚠️ This Email ID is already registered. Please switch to Log in or use Send Login Link.", "err");
+        showAuthBanner("⚠️ This Email ID is already registered and verified. Please switch to Log in.", "err");
         return;
       }
       if (!password || password.length < 6) {
@@ -11313,65 +12622,32 @@ if ($("#toggleRegPassBtn")) {
       }
 
       submitRegisterBtn.disabled = true;
-      submitRegisterBtn.textContent = "Sending Registration Link…";
+      submitRegisterBtn.textContent = "⏳ Sending 6-Digit Sign-Up OTP…";
 
-      const resv = await reserveUsername(cleanUname, email);
-      if (resv.taken) {
-        submitRegisterBtn.disabled = false;
-        submitRegisterBtn.textContent = "Create account";
-        showAuthBanner(`⚠️ Username @${cleanUname} is already taken. Please pick another unique username.`, "err");
-        return;
-      }
-
-      let idToken = "";
-      let firebaseSent = false;
-
-      // Try REST SignUp first (works on file:// in Chrome!) then fallback/sync with JS SDK
-      try {
-        const signUpData = await restAuthSignUp(email, password, cleanUname);
-        idToken = signUpData.idToken || "";
-        const mailRes = await dispatchVerificationAndLoginEmails(email, idToken);
-        firebaseSent = mailRes.sentAny;
-      } catch (restErr) {
-        const code = restErr?.code || "";
-        if (code.includes("EMAIL_EXISTS")) {
-          // Account already exists in Firebase Auth: try signing in to get idToken and resend verification link!
-          try {
-            const signInData = await restAuthSignIn(email, password);
-            idToken = signInData.idToken || "";
-            const mailRes = await dispatchVerificationAndLoginEmails(email, idToken);
-            firebaseSent = mailRes.sentAny;
-          } catch (signInErr) {
-            submitRegisterBtn.disabled = false;
-            submitRegisterBtn.textContent = "Create account";
-            showAuthBanner("⚠️ This Email ID is already registered in Firebase. Switch to the 'Log in' tab and click 'Send Login Link to Email' or 'Forgot Password'.", "err");
-            return;
-          }
-        } else {
-          // Try JS SDK fallback
-          try {
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(cred.user, { displayName: cleanUname });
-            await sendEmailVerification(cred.user);
-            firebaseSent = true;
-          } catch (sdkErr) {}
-        }
-      }
-
-      // Save user record in local registry & push to Firestore REST
+      // Save as UNVERIFIED until 6-digit OTP is entered and verified!
       regMap[cleanUname] = {
         username: cleanUname,
         email: email,
         password: password,
-        idToken: idToken,
         emailVerified: false,
+        otpVerified: false,
         createdAt: Date.now()
       };
       saveLocalRegistry(regMap);
-      pendingRegistration = { username: cleanUname, email: email, password: password, idToken: idToken };
+
+      const otpRes = await createAndDispatchOtpEmail(email, cleanUname, "signup", {
+        sentBy: "customer",
+        password: password
+      });
+      pendingRegistration = {
+        username: cleanUname,
+        email: email,
+        password: password,
+        supabaseUserId: otpRes.record.supabaseUserId || ""
+      };
 
       submitRegisterBtn.disabled = false;
-      submitRegisterBtn.textContent = "Create account";
+      submitRegisterBtn.textContent = "📨 Send Sign-Up OTP";
 
       const gateBox = document.getElementById("verifyEmailGateBox");
       const gateDesc = document.getElementById("verifyGateDesc");
@@ -11380,160 +12656,155 @@ if ($("#toggleRegPassBtn")) {
         gateBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
       if (gateDesc) {
-        gateDesc.innerHTML = `We sent a registration verification link to <strong>${email}</strong> for username <strong>@${cleanUname}</strong> (check your Inbox &amp; <strong>Spam/Promotions</strong> folder).<br><br>👇 <strong>Or click the green Registration Link button below</strong> to verify &amp; sign in immediately:`;
+        gateDesc.innerHTML = `We sent a <strong>6-digit Sign-Up OTP</strong> via Supabase to <strong>${email}</strong> for username <strong>@${cleanUname}</strong> (check Inbox &amp; Spam, or ask Admin to send the OTP from the Admin App if you have a problem).<br><br>🔒 <strong>Enter the exact 6-digit OTP below</strong> — you can only proceed once your OTP is verified:`;
       }
+      document.getElementById("regOtpInput")?.focus();
       showAuthBanner(
-        firebaseSent
-          ? `✅ Registration link sent to <strong>${email}</strong>! Open your email (check Spam too) or click the green Registration Link button below.`
-          : `📬 Registration link ready for <strong>${email}</strong> (@${cleanUname})! Click the green Registration Link button below to complete sign-up.`,
+        `📨 6-Digit Sign-Up OTP sent to <strong>${email}</strong>! Enter the 6-digit code in the box below and click Verify to activate your account.`,
         "ok"
       );
     });
   }
 
-  // CHECK EMAIL VERIFIED / COMPLETE INSTANT SIGN UP AFTER LINK CLICK
-  const checkEmailVerifiedBtn = document.getElementById("checkEmailVerifiedBtn");
-  if (checkEmailVerifiedBtn) {
-    checkEmailVerifiedBtn.addEventListener("click", async () => {
+  const verifyRegOtpBtn = document.getElementById("verifyRegOtpBtn");
+  if (verifyRegOtpBtn) {
+    verifyRegOtpBtn.addEventListener("click", async () => {
       const regMap = getLocalRegistry();
       const targetUname = pendingRegistration?.username || normalizeUsername(document.getElementById("regUsername")?.value);
-      const localUser = regMap[targetUname];
+      const targetEmail = pendingRegistration?.email || (document.getElementById("regEmail")?.value || "").trim().toLowerCase();
+      const enteredOtp = (document.getElementById("regOtpInput")?.value || "").trim();
 
-      let isVer = !!(localUser && localUser.emailVerified);
-      if (!isVer && auth && auth.currentUser) {
-        try {
-          await auth.currentUser.reload();
-          if (auth.currentUser.emailVerified) isVer = true;
-        } catch (e) {}
-      }
-      if (!isVer && (pendingRegistration?.idToken || localUser?.idToken)) {
-        try {
-          const info = await restAuthLookup(pendingRegistration?.idToken || localUser?.idToken);
-          if (info && info.emailVerified) isVer = true;
-        } catch (e) {}
+      if (!targetUname || !regMap[targetUname]) {
+        showAuthBanner("⚠️ Please fill out Username, Email ID & Password and click 'Send Sign-Up OTP' first.", "err");
+        return;
       }
 
-      if (isVer && localUser) {
-        localUser.emailVerified = true;
-        saveLocalRegistry(regMap);
-        updateSignedInHeaderUI(localUser);
-        document.getElementById("firebaseAuthModal")?.classList.remove("show");
-        if (typeof showToast === "function") showToast(`🎉 Welcome @${localUser.username}! Registration Verified!`);
-      } else if (localUser) {
-        // Complete verification for user clicking the confirmation button
-        localUser.emailVerified = true;
-        saveLocalRegistry(regMap);
-        updateSignedInHeaderUI(localUser);
-        document.getElementById("firebaseAuthModal")?.classList.remove("show");
-        if (typeof showToast === "function") showToast(`🎉 Welcome @${localUser.username}! Account Activated!`);
-      } else {
-        showAuthBanner("⚠️ Please fill out Username, Email & Password and click 'Create account' first.", "err");
+      const vCheck = await verifyCustomerOtpCode(targetEmail || targetUname, enteredOtp, ["signup", "all", "admin_support"]);
+      if (!vCheck.ok) {
+        showAuthBanner(vCheck.reason, "err");
+        return;
       }
+
+      regMap[targetUname].emailVerified = true;
+      regMap[targetUname].otpVerified = true;
+      saveLocalRegistry(regMap);
+      try {
+        if (typeof __adminBC !== "undefined" && __adminBC) {
+          __adminBC.postMessage({ type: "USER_UPDATED", username: targetUname, data: regMap[targetUname] });
+        }
+      } catch (e) {}
+
+      if (document.getElementById("regOtpInput")) document.getElementById("regOtpInput").value = "";
+      if (document.getElementById("verifyEmailGateBox")) document.getElementById("verifyEmailGateBox").style.display = "none";
+
+      updateSignedInHeaderUI(regMap[targetUname]);
+      document.getElementById("firebaseAuthModal")?.classList.remove("show");
+      if (typeof showToast === "function") showToast(`🎉 6-Digit OTP Verified! Welcome @${targetUname}!`);
     });
   }
 
-  // RESEND REGISTRATION EMAIL LINK
   const resendVerifyLinkBtn = document.getElementById("resendVerifyLinkBtn");
   if (resendVerifyLinkBtn) {
     resendVerifyLinkBtn.addEventListener("click", async () => {
       const email = pendingRegistration?.email || (document.getElementById("regEmail")?.value || "").trim().toLowerCase();
-      const idTok = pendingRegistration?.idToken || "";
-      await dispatchVerificationAndLoginEmails(email, idTok);
-      showAuthBanner(`📨 Registration link resent to <strong>${email || "your email"}</strong>! (Check Inbox & Spam, or click the green Registration Link button above.)`, "ok");
-    });
-  }
-
-  // DIRECT REGISTRATION LINK BUTTON (Completes instant sign-up)
-  const simulateEmailLinkClickBtn = document.getElementById("simulateEmailLinkClickBtn");
-  if (simulateEmailLinkClickBtn) {
-    simulateEmailLinkClickBtn.addEventListener("click", () => {
-      const targetUname = pendingRegistration?.username || normalizeUsername(document.getElementById("regUsername")?.value);
-      const regMap = getLocalRegistry();
-      if (!targetUname || !regMap[targetUname]) {
-        showAuthBanner("⚠️ Please fill out Username, Email ID & Password and click 'Create account' first.", "err");
+      const uname = pendingRegistration?.username || normalizeUsername(document.getElementById("regUsername")?.value);
+      if (!email) {
+        showAuthBanner("⚠️ Enter your Email address above first.", "err");
         return;
       }
-      regMap[targetUname].emailVerified = true;
-      saveLocalRegistry(regMap);
-      updateSignedInHeaderUI(regMap[targetUname]);
-      document.getElementById("firebaseAuthModal")?.classList.remove("show");
-      if (typeof showToast === "function") {
-        showToast(`🎉 Registration Link Verified! Signed in as @${targetUname}!`);
-      }
+      const pass = pendingRegistration?.password || (document.getElementById("regPassword")?.value || "");
+      await createAndDispatchOtpEmail(email, uname, "signup", { sentBy: "customer", password: pass, isResend: true });
+      showAuthBanner(`📨 Fresh 6-digit Sign-Up OTP (Sign-Up Template) sent to <strong>${email}</strong>!`, "ok");
     });
   }
 
-  // HELPER TO DISPLAY & SEND LOGIN LINK IN LOGIN TAB
-  async function triggerSendLoginLink() {
+  // ==========================================================================
+  // 2. LOGIN: PASSWORD (ONLY IF OTP-VERIFIED) OR 6-DIGIT LOGIN OTP
+  // ==========================================================================
+  async function triggerSendLoginOtp() {
     const identifier = (document.getElementById("loginIdentifier")?.value || "").trim();
     if (!identifier) {
-      showAuthBanner("⚠️ Please enter your Username or Email ID first, then click 'Send Login Link to Email'.", "err");
+      showAuthBanner("⚠️ Please enter your Username or Email ID first, then click 'Send 6-Digit Login OTP to Email'.", "err");
       return;
     }
     const resolved = await resolveUsernameOrEmail(identifier);
     const targetEmail = resolved.email || (identifier.includes("@") ? identifier.toLowerCase() : "");
-    if (!targetEmail) {
-      showAuthBanner(`⚠️ Could not find an email for <strong>${identifier}</strong>. Please enter your Email ID or Register first.`, "err");
+    if (!targetEmail || !resolved.record) {
+      showAuthBanner(`⚠️ No registered account found for <strong>${identifier}</strong>. Please switch to 'Sign up' first.`, "err");
       return;
     }
 
-    const localReg = getLocalRegistry();
     const uname = resolved.username || normalizeUsername(targetEmail.split("@")[0]);
-    if (!localReg[uname]) {
-      localReg[uname] = { username: uname, email: targetEmail, emailVerified: true, createdAt: Date.now() };
-      saveLocalRegistry(localReg);
-    }
+    pendingLoginTarget = { username: uname, email: targetEmail };
 
-    await dispatchVerificationAndLoginEmails(targetEmail, localReg[uname]?.idToken || "");
+    await createAndDispatchOtpEmail(targetEmail, uname, "login", { sentBy: "customer" });
 
     const loginBox = document.getElementById("loginLinkGateBox");
     const loginDesc = document.getElementById("loginLinkGateDesc");
-    const magicLink = document.getElementById("directLoginMagicLink");
     if (loginBox) {
       loginBox.style.display = "block";
       loginBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
     if (loginDesc) {
-      loginDesc.innerHTML = `We sent a Login Link to <strong>${targetEmail}</strong> for <strong>@${uname}</strong> (check Inbox &amp; Spam/Promotions), or click your direct Login Link below:`;
+      loginDesc.innerHTML = `We sent a <strong>6-digit Login OTP</strong> via Supabase to <strong>${targetEmail}</strong> for <strong>@${uname}</strong> (or Admin can send it if you have a problem). Enter the exact 6-digit OTP below to sign in:`;
     }
-    if (magicLink) {
-      magicLink.href = `${ window.location.href.split("?")[0] }?gryxcellVerifyEmail=${encodeURIComponent(targetEmail)}`;
-      magicLink.onclick = (ev) => {
-        ev.preventDefault();
-        localReg[uname].emailVerified = true;
-        saveLocalRegistry(localReg);
-        updateSignedInHeaderUI(localReg[uname]);
-        document.getElementById("firebaseAuthModal")?.classList.remove("show");
-        if (typeof showToast === "function") showToast(`👋 Logged in via Login Link as @${uname}!`);
-      };
-    }
-    showAuthBanner(`✅ Login Link sent to <strong>${targetEmail}</strong>! Click the link in your email or click the green Instant Login Link below.`, "ok");
+    document.getElementById("loginOtpInput")?.focus();
+    showAuthBanner(`📨 6-Digit Login OTP sent to <strong>${targetEmail}</strong>! Enter the code below to sign in.`, "ok");
   }
 
-  const sendLoginLinkBtn = document.getElementById("sendLoginLinkBtn");
-  if (sendLoginLinkBtn) sendLoginLinkBtn.addEventListener("click", triggerSendLoginLink);
+  document.getElementById("sendLoginLinkBtn")?.addEventListener("click", triggerSendLoginOtp);
+  document.getElementById("resendLoginLinkBtn")?.addEventListener("click", triggerSendLoginOtp);
 
-  const resendLoginLinkBtn = document.getElementById("resendLoginLinkBtn");
-  if (resendLoginLinkBtn) resendLoginLinkBtn.addEventListener("click", triggerSendLoginLink);
+  const verifyLoginOtpBtn = document.getElementById("verifyLoginOtpBtn");
+  if (verifyLoginOtpBtn) {
+    verifyLoginOtpBtn.addEventListener("click", async () => {
+      const identifier = (document.getElementById("loginIdentifier")?.value || "").trim();
+      const resolved = pendingLoginTarget || await resolveUsernameOrEmail(identifier);
+      const targetEmail = resolved?.email || "";
+      const targetUname = resolved?.username || "";
+      const enteredOtp = (document.getElementById("loginOtpInput")?.value || "").trim();
 
-  // LOGIN SUBMIT: Accepts Unique Username OR Email ID + Password (OR sends Login Link if password omitted)
+      if (!targetEmail && !targetUname) {
+        showAuthBanner("⚠️ Please enter your Username or Email ID and request a 6-digit Login OTP first.", "err");
+        return;
+      }
+
+      const vCheck = await verifyCustomerOtpCode(targetEmail || targetUname, enteredOtp, ["login", "signup", "all", "admin_support"]);
+      if (!vCheck.ok) {
+        showAuthBanner(vCheck.reason, "err");
+        return;
+      }
+
+      const localReg = getLocalRegistry();
+      if (!localReg[targetUname]) {
+        showAuthBanner("⚠️ Account not found. Please sign up first.", "err");
+        return;
+      }
+      localReg[targetUname].emailVerified = true;
+      localReg[targetUname].otpVerified = true;
+      saveLocalRegistry(localReg);
+
+      if (document.getElementById("loginOtpInput")) document.getElementById("loginOtpInput").value = "";
+      if (document.getElementById("loginLinkGateBox")) document.getElementById("loginLinkGateBox").style.display = "none";
+
+      updateSignedInHeaderUI(localReg[targetUname]);
+      document.getElementById("firebaseAuthModal")?.classList.remove("show");
+      if (typeof showToast === "function") showToast(`👋 OTP Verified! Logged in as @${targetUname}!`);
+    });
+  }
+
   const submitLoginBtn = document.getElementById("submitLoginBtn");
   if (submitLoginBtn) {
     submitLoginBtn.addEventListener("click", async () => {
       const identifier = (document.getElementById("loginIdentifier")?.value || "").trim();
       const password = document.getElementById("loginPassword")?.value || "";
-      if (!identifier) {
-        showAuthBanner("⚠️ Please enter your Username or Email ID.", "err");
-        return;
-      }
-      // Login only needs username/email + password (no email confirmation at login)
-      if (!password) {
-        showAuthBanner("⚠️ Please enter your password to log in.", "err");
+      if (!identifier || !password) {
+        showAuthBanner("⚠️ Please enter your Username/Email ID and Password (or click 'Send 6-Digit Login OTP to Email').", "err");
         return;
       }
 
       submitLoginBtn.disabled = true;
-      submitLoginBtn.textContent = "⏳ Signing In…";
+      submitLoginBtn.textContent = "⏳ Checking…";
 
       const resolved = await resolveUsernameOrEmail(identifier);
       const targetEmail = resolved.email;
@@ -11541,111 +12812,333 @@ if ($("#toggleRegPassBtn")) {
 
       if (!targetEmail) {
         submitLoginBtn.disabled = false;
-        submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-        showAuthBanner(`⚠️ No account found for username <strong>@${resolved.username}</strong>. Please click 'Create account' to register first.`, "err");
+        submitLoginBtn.textContent = "🔐 Sign In";
+        showAuthBanner(`⚠️ No account found for <strong>${identifier}</strong>. Please click 'Sign up' to register first.`, "err");
         return;
       }
 
       const localRecord = Object.values(localReg).find(u => (u.email || "").toLowerCase() === targetEmail.toLowerCase());
 
-      // Email confirmation is required ONLY at registration: block login if sign-up was never confirmed
-      const blockUnconfirmed = async (idToken) => {
-        if (!(localRecord && localRecord.emailVerified === false)) return false;
-        let fbVerified = false;
+      // Also attempt Supabase password sign-in if available
+      if (supabaseClient) {
         try {
-          if (idToken) {
-            const r = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseConfig.apiKey}`, {
-              method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ idToken })
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email: targetEmail, password: password });
+          if (!error && data && data.user && data.user.email_confirmed_at) {
+            const cleanU = normalizeUsername(localRecord?.username || (data.user.user_metadata && data.user.user_metadata.username) || targetEmail.split("@")[0]);
+            localReg[cleanU] = Object.assign({}, localReg[cleanU] || {}, {
+              username: cleanU,
+              email: targetEmail,
+              password: password,
+              emailVerified: true,
+              otpVerified: true
             });
-            const j = await r.json();
-            fbVerified = !!(j && j.users && j.users[0] && j.users[0].emailVerified);
-          }
-        } catch (e) {}
-        if (fbVerified) return false;
-        submitLoginBtn.disabled = false;
-        submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-        showAuthBanner("⚠️ Please finish registration first: confirm your email using the registration link we sent you.", "err");
-        return true;
-      };
-
-      // 1. Try Firebase REST SignIn first (works in Chrome even on file://!)
-      try {
-        const data = await restAuthSignIn(targetEmail, password);
-        if (await blockUnconfirmed(data.idToken)) return;
-        const uname = localRecord?.username || data.displayName || targetEmail.split("@")[0];
-        const cleanU = normalizeUsername(uname);
-        localReg[cleanU] = {
-          ...(localReg[cleanU] || {}),
-          username: cleanU,
-          email: targetEmail,
-          password: password,
-          idToken: data.idToken,
-          emailVerified: true
-        };
-        saveLocalRegistry(localReg);
-        updateSignedInHeaderUI(localReg[cleanU]);
-        submitLoginBtn.disabled = false;
-        submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-        document.getElementById("firebaseAuthModal")?.classList.remove("show");
-        if (typeof showToast === "function") showToast(`👋 Welcome back, @${cleanU}!`);
-        return;
-      } catch (restErr) {
-        // 2. Check local synchronized registry
-        if (localRecord && localRecord.password === password) {
-          if (localRecord.emailVerified === false) {
+            saveLocalRegistry(localReg);
+            updateSignedInHeaderUI(localReg[cleanU]);
             submitLoginBtn.disabled = false;
-            submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-            showAuthBanner("⚠️ Please finish registration first: confirm your email using the registration link we sent you.", "err");
+            submitLoginBtn.textContent = "🔐 Sign In";
+            document.getElementById("firebaseAuthModal")?.classList.remove("show");
+            if (typeof showToast === "function") showToast(`👋 Welcome back, @${cleanU}!`);
             return;
           }
-          localRecord.emailVerified = true;
-          saveLocalRegistry(localReg);
-          updateSignedInHeaderUI(localRecord);
-          submitLoginBtn.disabled = false;
-          submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-          document.getElementById("firebaseAuthModal")?.classList.remove("show");
-          if (typeof showToast === "function") showToast(`👋 Welcome back, @${localRecord.username}!`);
-          return;
-        }
-        submitLoginBtn.disabled = false;
-        submitLoginBtn.textContent = "🔐 Sign In / Send Login Link";
-        showAuthBanner("⚠️ Incorrect username/email or password. Please try again or use 'Forgot Password?'.", "err");
+        } catch (e) {}
       }
+
+      if (localRecord && localRecord.password !== password) {
+        submitLoginBtn.disabled = false;
+        submitLoginBtn.textContent = "🔐 Sign In";
+        showAuthBanner("⚠️ Incorrect username/email or password. Please try again or use 'Forgot Password?' with 6-digit OTP.", "err");
+        return;
+      }
+
+      // If account has NOT verified its 6-digit OTP yet, block direct login and require 6-digit OTP verification!
+      if (localRecord && !localRecord.emailVerified) {
+        submitLoginBtn.disabled = false;
+        submitLoginBtn.textContent = "🔐 Sign In";
+        pendingLoginTarget = { username: localRecord.username, email: targetEmail };
+        await createAndDispatchOtpEmail(targetEmail, localRecord.username, "signup", { sentBy: "customer", password: localRecord.password || password, isResend: true });
+        const loginBox = document.getElementById("loginLinkGateBox");
+        if (loginBox) loginBox.style.display = "block";
+        showAuthBanner(`🔒 Your account <strong>@${localRecord.username}</strong> requires 6-digit OTP verification before first sign-in. We sent a 6-digit OTP to <strong>${targetEmail}</strong> — enter it below to proceed.`, "info");
+        return;
+      }
+
+      if (localRecord && localRecord.password === password && localRecord.emailVerified) {
+        localRecord.otpVerified = true;
+        saveLocalRegistry(localReg);
+        updateSignedInHeaderUI(localRecord);
+        submitLoginBtn.disabled = false;
+        submitLoginBtn.textContent = "🔐 Sign In";
+        document.getElementById("firebaseAuthModal")?.classList.remove("show");
+        if (typeof showToast === "function") showToast(`👋 Welcome back, @${localRecord.username}!`);
+        return;
+      }
+
+      submitLoginBtn.disabled = false;
+      submitLoginBtn.textContent = "🔐 Sign In";
+      showAuthBanner("⚠️ Incorrect username/email or password. Please try again or use 'Forgot Password?'.", "err");
     });
   }
 
-  // FORGOT PASSWORD SUBMIT: Resolves Username or Email -> Sends Reset Link via REST + SDK
-  const submitForgotBtn = document.getElementById("submitForgotBtn");
-  if (submitForgotBtn) {
-    submitForgotBtn.addEventListener("click", async () => {
-      const identifier = (document.getElementById("forgotIdentifier")?.value || "").trim();
-      if (!identifier) {
-        showAuthBanner("⚠️ Please enter your registered Email ID or Username.", "err");
-        return;
-      }
+  // ==========================================================================
+  // 3. FORGOT PASSWORD: SEND 6-DIGIT OTP & VERIFY OTP TO RESET PASSWORD
+  // ==========================================================================
+  async function triggerSendForgotOtp() {
+    const identifier = (document.getElementById("forgotIdentifier")?.value || "").trim();
+    if (!identifier) {
+      showAuthBanner("⚠️ Please enter your registered Email ID or @Username.", "err");
+      return;
+    }
+    const submitForgotBtn = document.getElementById("submitForgotBtn");
+    if (submitForgotBtn) {
       submitForgotBtn.disabled = true;
-      submitForgotBtn.textContent = "⏳ Sending Reset Link…";
+      submitForgotBtn.textContent = "⏳ Sending 6-Digit Reset OTP…";
+    }
 
-      const resolved = await resolveUsernameOrEmail(identifier);
-      const emailToReset = resolved.email || (identifier.includes("@") ? identifier.toLowerCase() : null);
-      if (!emailToReset) {
+    const resolved = await resolveUsernameOrEmail(identifier);
+    const emailToReset = resolved.email || (identifier.includes("@") ? identifier.toLowerCase() : null);
+    if (!emailToReset || !resolved.record) {
+      if (submitForgotBtn) {
         submitForgotBtn.disabled = false;
-        submitForgotBtn.textContent = "📨 Send Password Reset Link";
-        showAuthBanner(`⚠️ Could not find a registered email address for <strong>${identifier}</strong>.`, "err");
+        submitForgotBtn.textContent = "📨 Send 6-Digit Reset OTP";
+      }
+      showAuthBanner(`⚠️ Could not find a registered account for <strong>${identifier}</strong>.`, "err");
+      return;
+    }
+
+    const uname = resolved.username || normalizeUsername(emailToReset.split("@")[0]);
+    pendingForgotTarget = { username: uname, email: emailToReset };
+
+    await createAndDispatchOtpEmail(emailToReset, uname, "reset_password", { sentBy: "customer" });
+
+    if (submitForgotBtn) {
+      submitForgotBtn.disabled = false;
+      submitForgotBtn.textContent = "📨 Send 6-Digit Reset OTP";
+    }
+
+    const gateBox = document.getElementById("forgotOtpGateBox");
+    const gateDesc = document.getElementById("forgotOtpGateDesc");
+    if (gateBox) {
+      gateBox.style.display = "block";
+      gateBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (gateDesc) {
+      gateDesc.innerHTML = `We sent a <strong>6-digit Password Reset OTP</strong> via Supabase to <strong>${emailToReset}</strong> (@${uname}). Enter the 6-digit OTP and your new password below (only verified OTPs can reset password):`;
+    }
+    document.getElementById("forgotOtpInput")?.focus();
+    showAuthBanner(
+      `📨 6-Digit Password Reset OTP sent to <strong>${emailToReset}</strong>! Enter the OTP and your new password below.`,
+      "ok"
+    );
+  }
+
+  document.getElementById("submitForgotBtn")?.addEventListener("click", triggerSendForgotOtp);
+  document.getElementById("resendForgotOtpBtn")?.addEventListener("click", triggerSendForgotOtp);
+
+  const verifyForgotOtpBtn = document.getElementById("verifyForgotOtpBtn");
+  if (verifyForgotOtpBtn) {
+    verifyForgotOtpBtn.addEventListener("click", async () => {
+      const identifier = (document.getElementById("forgotIdentifier")?.value || "").trim();
+      const resolved = pendingForgotTarget || await resolveUsernameOrEmail(identifier);
+      const targetEmail = resolved?.email || "";
+      const targetUname = resolved?.username || "";
+      const enteredOtp = (document.getElementById("forgotOtpInput")?.value || "").trim();
+      const newPassword = document.getElementById("forgotNewPassword")?.value || "";
+
+      if (!targetEmail || !targetUname) {
+        showAuthBanner("⚠️ Please enter your registered Email ID or @Username and click 'Send 6-Digit Reset OTP' first.", "err");
         return;
       }
+      if (!newPassword || newPassword.length < 6) {
+        showAuthBanner("⚠️ Please enter a new password with at least 6 characters.", "err");
+        return;
+      }
+
+      const vCheck = await verifyCustomerOtpCode(targetEmail, enteredOtp, ["reset_password", "all", "admin_support"]);
+      if (!vCheck.ok) {
+        showAuthBanner(vCheck.reason, "err");
+        return;
+      }
+
+      if (supabaseClient) {
+        try { await supabaseClient.auth.updateUser({ password: newPassword }); } catch (e) {}
+      }
+
+      const localReg = getLocalRegistry();
+      if (!localReg[targetUname]) {
+        showAuthBanner("⚠️ Account record not found.", "err");
+        return;
+      }
+      localReg[targetUname].password = newPassword;
+      localReg[targetUname].newPassword = newPassword;
+      localReg[targetUname].emailVerified = true;
+      localReg[targetUname].otpVerified = true;
+      localReg[targetUname].updatedAt = Date.now();
+      saveLocalRegistry(localReg);
+
+      // Also sync password in Coming Soon signups if present
+      try {
+        const csList = loadComingSoonSignups();
+        let csCh = false;
+        csList.forEach(s => {
+          if ((s.username || "").toLowerCase() === targetUname || (s.email || "").toLowerCase() === targetEmail) {
+            s.password = newPassword;
+            csCh = true;
+          }
+        });
+        if (csCh) saveComingSoonSignups(csList);
+      } catch (e) {}
+
+      if (document.getElementById("forgotOtpInput")) document.getElementById("forgotOtpInput").value = "";
+      if (document.getElementById("forgotNewPassword")) document.getElementById("forgotNewPassword").value = "";
+      if (document.getElementById("forgotOtpGateBox")) document.getElementById("forgotOtpGateBox").style.display = "none";
+
+      updateSignedInHeaderUI(localReg[targetUname]);
+      document.getElementById("firebaseAuthModal")?.classList.remove("show");
+      if (typeof showToast === "function") showToast(`🔑 OTP Verified! Password reset & signed in as @${targetUname}!`);
+    });
+  }
+
+  // ==========================================================================
+  // 4. CHANGE EMAIL: SEND 6-DIGIT OTP & VERIFY OTP TO CHANGE EMAIL ADDRESS
+  // ==========================================================================
+  async function triggerSendChangeEmailOtp() {
+    const identifier = (document.getElementById("changeEmailIdentifier")?.value || "").trim();
+    const curPassword = document.getElementById("changeEmailPassword")?.value || "";
+    const newEmail = (document.getElementById("changeEmailNewInput")?.value || "").trim().toLowerCase();
+
+    if (!identifier || !curPassword) {
+      showAuthBanner("⚠️ Please enter your current @Username/Email ID and your current Password.", "err");
+      return;
+    }
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+      showAuthBanner("⚠️ Please enter a valid New Email Address.", "err");
+      return;
+    }
+
+    const resolved = await resolveUsernameOrEmail(identifier);
+    const localReg = getLocalRegistry();
+    const uRec = resolved.record || (resolved.username ? localReg[resolved.username] : null);
+    if (!uRec) {
+      showAuthBanner(`⚠️ No registered account found for <strong>${identifier}</strong>.`, "err");
+      return;
+    }
+    if (uRec.password && uRec.password !== curPassword) {
+      showAuthBanner("⚠️ Current password is incorrect. Please enter your valid current password.", "err");
+      return;
+    }
+
+    const emailTakenByOther = Object.values(localReg).find(u => u.username !== uRec.username && (u.email || "").toLowerCase() === newEmail && u.emailVerified);
+    if (emailTakenByOther) {
+      showAuthBanner(`⚠️ The email <strong>${newEmail}</strong> is already used by another account.`, "err");
+      return;
+    }
+
+    uRec.pendingNewEmail = newEmail;
+    localReg[uRec.username] = uRec;
+    saveLocalRegistry(localReg);
+
+    pendingChangeEmailTarget = {
+      username: uRec.username,
+      oldEmail: uRec.email,
+      newEmail: newEmail
+    };
+
+    const submitBtn = document.getElementById("submitChangeEmailBtn");
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "⏳ Sending 6-Digit OTP…";
+    }
+
+    await createAndDispatchOtpEmail(uRec.email, uRec.username, "change_email", {
+      sentBy: "customer",
+      newEmail: newEmail
+    });
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "📨 Send 6-Digit OTP to New Email";
+    }
+
+    const gateBox = document.getElementById("changeEmailOtpGateBox");
+    const gateDesc = document.getElementById("changeEmailOtpGateDesc");
+    if (gateBox) {
+      gateBox.style.display = "block";
+      gateBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (gateDesc) {
+      gateDesc.innerHTML = `We sent a <strong>6-digit Change Email OTP</strong> via Supabase to <strong>${newEmail}</strong> for <strong>@${uRec.username}</strong> (or Admin can dispatch it if you have a problem). Enter the exact 6-digit OTP below to confirm your email change:`;
+    }
+    document.getElementById("changeEmailOtpInput")?.focus();
+    showAuthBanner(
+      `📨 6-Digit Change Email OTP sent to <strong>${newEmail}</strong>! Enter the 6-digit OTP below to verify and update your email.`,
+      "ok"
+    );
+  }
+
+  document.getElementById("submitChangeEmailBtn")?.addEventListener("click", triggerSendChangeEmailOtp);
+  document.getElementById("resendChangeEmailOtpBtn")?.addEventListener("click", triggerSendChangeEmailOtp);
+
+  const verifyChangeEmailOtpBtn = document.getElementById("verifyChangeEmailOtpBtn");
+  if (verifyChangeEmailOtpBtn) {
+    verifyChangeEmailOtpBtn.addEventListener("click", async () => {
+      const identifier = (document.getElementById("changeEmailIdentifier")?.value || "").trim();
+      const newEmailInp = (document.getElementById("changeEmailNewInput")?.value || "").trim().toLowerCase();
+      const enteredOtp = (document.getElementById("changeEmailOtpInput")?.value || "").trim();
+
+      const targetUname = pendingChangeEmailTarget?.username || (await resolveUsernameOrEmail(identifier))?.username || "";
+      const newEmail = pendingChangeEmailTarget?.newEmail || newEmailInp;
+      const oldEmail = pendingChangeEmailTarget?.oldEmail || "";
+
+      if (!targetUname || !newEmail) {
+        showAuthBanner("⚠️ Please fill out your account details and click 'Send 6-Digit OTP to New Email' first.", "err");
+        return;
+      }
+
+      const vCheckNew = await verifyCustomerOtpCode(newEmail, enteredOtp, ["change_email", "all", "admin_support"]);
+      const vCheckOld = vCheckNew.ok ? vCheckNew : await verifyCustomerOtpCode(oldEmail || targetUname, enteredOtp, ["change_email", "all", "admin_support"]);
+      if (!vCheckOld.ok) {
+        showAuthBanner(vCheckOld.reason, "err");
+        return;
+      }
+
+      const localReg = getLocalRegistry();
+      if (!localReg[targetUname]) {
+        showAuthBanner("⚠️ Account record not found.", "err");
+        return;
+      }
+
+      localReg[targetUname].email = newEmail;
+      delete localReg[targetUname].pendingNewEmail;
+      localReg[targetUname].emailVerified = true;
+      localReg[targetUname].otpVerified = true;
+      localReg[targetUname].updatedAt = Date.now();
+      saveLocalRegistry(localReg);
+
+      // Update Coming Soon sign-ups email if present
+      try {
+        const csList = loadComingSoonSignups();
+        let csCh = false;
+        csList.forEach(s => {
+          if ((s.username || "").toLowerCase() === targetUname) {
+            s.email = newEmail;
+            csCh = true;
+          }
+        });
+        if (csCh) saveComingSoonSignups(csList);
+      } catch (e) {}
 
       try {
-        await restSendOobEmail({ requestType: "PASSWORD_RESET", email: emailToReset });
-      } catch (e) {
-        try { await sendPasswordResetEmail(auth, emailToReset); } catch (e2) {}
-      }
-      submitForgotBtn.disabled = false;
-      submitForgotBtn.textContent = "📨 Send Password Reset Link";
-      showAuthBanner(
-        `✅ Password reset link sent to <strong>${emailToReset}</strong>! Check your Inbox (and Spam/Promotions folder) to set a new password.`,
-        "ok"
-      );
+        if (typeof __adminBC !== "undefined" && __adminBC) {
+          __adminBC.postMessage({ type: "USER_UPDATED", username: targetUname, data: localReg[targetUname] });
+        }
+      } catch (e) {}
+
+      if (document.getElementById("changeEmailOtpInput")) document.getElementById("changeEmailOtpInput").value = "";
+      if (document.getElementById("changeEmailOtpGateBox")) document.getElementById("changeEmailOtpGateBox").style.display = "none";
+
+      updateSignedInHeaderUI(localReg[targetUname]);
+      document.getElementById("firebaseAuthModal")?.classList.remove("show");
+      if (typeof showToast === "function") showToast(`✅ OTP Verified! Email updated to ${newEmail} for @${targetUname}!`);
     });
   }
 
@@ -11659,133 +13152,94 @@ if ($("#toggleRegPassBtn")) {
         localStorage.setItem("gryxcell_explicit_logout", "1");
         localStorage.removeItem(LOCAL_SESSION_KEY);
       } catch (e) {}
-      try { await signOut(auth); } catch (e) {}
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch (e) {}
       updateSignedInHeaderUI(null);
       if (typeof showToast === "function") showToast("👋 Signed out of your account");
     });
   }
 
-window.__fbReady=true;
-</script>
-
-<script type="module">
-import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {getFirestore,doc,getDoc,setDoc,onSnapshot,increment} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyDZhwFvYxFvJbtXfx6Y-6yid61Zx7b835U",authDomain:"templetegryxcell.firebaseapp.com",projectId:"templetegryxcell",storageBucket:"templetegryxcell.firebasestorage.app",messagingSenderId:"479346967243",appId:"1:479346967243:web:ed4b0d7bef7d3e3f6ad14e"};
-const REST_BASE=`https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/(default)/documents`;
-const db=getFirestore(getApps().length?getApp():initializeApp(cfg));
-const DEMO=["aarav_sharma","ananya_verma","rohan_mehta","priya_singh"];
-const J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||d)}catch(e){return JSON.parse(d)}};
-const sess=()=>J("gryxcell_active_session_v1","null");
-const seenP=new Set(J("tpl_synced_p","[]"));
-
-function applyRemoteSiteConfig(d) {
-  if (!d || !d.siteStatus) return;
-  const old = J("templates_site_config_v1", "{}");
-  const nextCfg = {
-    ...old,
-    siteStatus: d.siteStatus || "active",
-    recommendedIds: (Array.isArray(d.recommendedIds) && d.recommendedIds.length)
-      ? d.recommendedIds
-      : (Array.isArray(old.recommendedIds) && old.recommendedIds.length ? old.recommendedIds : [1,2,4,21,22,37,45,52]),
-    updatedAt: Number(d.updatedAt) || Date.now()
-  };
-  if (old.siteStatus !== nextCfg.siteStatus || JSON.stringify(old.recommendedIds) !== JSON.stringify(nextCfg.recommendedIds)) {
-    localStorage.setItem("templates_site_config_v1", JSON.stringify(nextCfg));
-    window.syncSiteGatesUI && syncSiteGatesUI();
-    window.renderRecommendedOnHome && renderRecommendedOnHome();
+  // ==========================================================================
+  // SUPABASE REST v1 CLOUD SYNC (https://nujhenrphkjhiugnridb.supabase.co/rest/v1/)
+  // ==========================================================================
+  async function safeSupabaseUpsert(tableName, docId, dataObj) {
+    const rowPayload = {
+      id: docId,
+      payload: JSON.stringify(dataObj),
+      updated_at: Date.now()
+    };
+    try {
+      await fetch(`https://nujhenrphkjhiugnridb.supabase.co/rest/v1/${encodeURIComponent(tableName)}?on_conflict=id`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify(rowPayload)
+      });
+    } catch (e) {}
   }
-}
 
-window.__pushSiteConfigToCloud = async function(siteCfg) {
-  const payload = {
-    siteStatus: siteCfg.siteStatus || "active",
-    recommendedIds: siteCfg.recommendedIds || [1,2,4,21,22,37,45,52],
-    updatedAt: siteCfg.updatedAt || Date.now()
-  };
-  try {
-    await setDoc(doc(db, "site", "config"), payload, { merge: true });
-    return;
-  } catch (e) {}
-  try {
-    await fetch(`${REST_BASE}/site/config?updateMask.fieldPaths=siteStatus&updateMask.fieldPaths=updatedAt&updateMask.fieldPaths=recommendedIds&key=${cfg.apiKey}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fields: {
-          siteStatus: { stringValue: payload.siteStatus },
-          updatedAt: { integerValue: String(payload.updatedAt) },
-          recommendedIds: { arrayValue: { values: payload.recommendedIds.map(id => ({ integerValue: String(id) })) } }
+  async function pullSupabaseCloudState() {
+    try {
+      const res = await fetch(`https://nujhenrphkjhiugnridb.supabase.co/rest/v1/site_state?select=id,payload,updated_at`, {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Accept": "application/json"
         }
-      })
-    });
-  } catch (e2) {}
-};
+      });
+      if (!res.ok) return;
+      const rows = await res.json();
+      if (!Array.isArray(rows)) return;
+      rows.forEach(r => {
+        if (!r || !r.id || !r.payload) return;
+        try {
+          const parsed = typeof r.payload === "string" ? JSON.parse(r.payload) : r.payload;
+          if (r.id === "config" && parsed && typeof parsed === "object") {
+            localStorage.setItem("templates_site_config_v1", JSON.stringify(parsed));
+            if (typeof window.syncSiteGatesUI === "function") window.syncSiteGatesUI();
+          } else if (r.id === "coupons_v2" && parsed && Array.isArray(parsed.items)) {
+            localStorage.setItem("templates_coupons_v2", JSON.stringify(parsed.items));
+          } else if (r.id === "coming_soon_signups" && parsed && Array.isArray(parsed.items)) {
+            localStorage.setItem("templates_coming_soon_signups_v1", JSON.stringify(parsed.items));
+          } else if (r.id === "otp_store" && parsed && typeof parsed === "object") {
+            const curOtp = JSON.parse(localStorage.getItem("templates_otp_store_v1") || "{}");
+            localStorage.setItem("templates_otp_store_v1", JSON.stringify(Object.assign({}, curOtp, parsed)));
+          } else if (r.id === "users_registry" && parsed && typeof parsed === "object") {
+            const curUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "{}");
+            localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(Object.assign({}, curUsers, parsed)));
+          }
+        } catch (err) {}
+      });
+    } catch (e) {}
+  }
 
-// 1. Real-time Firestore listener so clicking Coming Soon in Admin Panel locks/unlocks immediately
-try {
-  onSnapshot(doc(db, "site", "config"), (snap) => {
-    if (snap.exists()) applyRemoteSiteConfig(snap.data());
-  }, () => {});
-} catch (e) {}
+  pullSupabaseCloudState();
 
-// 2. REST API fallback for Chrome file:// protocol
-async function pullRestConfig() {
-  try {
-    const res = await fetch(`${REST_BASE}/site/config?key=${cfg.apiKey}`, { cache: "no-store" });
-    if (!res.ok) return;
-    const data = await res.json();
-    const f = data.fields || {};
-    const siteStatus = f.siteStatus?.stringValue;
-    if (!siteStatus) return;
-    const recVals = f.recommendedIds?.arrayValue?.values;
-    const recommendedIds = Array.isArray(recVals) && recVals.length
-      ? recVals.map(v => Number(v.integerValue || v.doubleValue || v.stringValue)).filter(Boolean)
-      : undefined;
-    applyRemoteSiteConfig({
-      siteStatus,
-      recommendedIds,
-      updatedAt: Number(f.updatedAt?.integerValue || f.updatedAt?.doubleValue || Date.now())
-    });
-  } catch (e) {}
-}
+  window.__pushSiteConfigToCloud = (siteCfg) => safeSupabaseUpsert("site_state", "config", siteCfg);
+  window.__pushCouponsToCloud = (couponsList) => safeSupabaseUpsert("site_state", "coupons_v2", { items: couponsList });
+  window.__pushCsSignupsToCloud = (signupsList) => safeSupabaseUpsert("site_state", "coming_soon_signups", { items: signupsList });
+  window.__pushOtpStoreToCloud = (otpStoreObj) => safeSupabaseUpsert("site_state", "otp_store", otpStoreObj);
+  window.__pushUsersRegistryToCloud = (usersMap) => safeSupabaseUpsert("site_state", "users_registry", usersMap);
+  window.__pushUserToCloud = (username, uData) => {
+    safeSupabaseUpsert("users", username, uData);
+    try {
+      const allUsers = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "{}");
+      safeSupabaseUpsert("site_state", "users_registry", allUsers);
+    } catch (e) {}
+  };
 
-async function pushUsers(){const r=J("gryxcell_firebase_users_v1","{}");
- for(const u in r){if(DEMO.includes(u))continue;const x=r[u];
-  try{await setDoc(doc(db,"users",u),{username:u,email:x.email||"",createdAt:x.createdAt||Date.now(),subscription:x.subscription||null},{merge:true})}catch(e){}}}
-async function pushPurchases(){for(const p of J("templates_purchases_ledger_v1","[]")){
- if(seenP.has(p.id))continue;
- try{await setDoc(doc(db,"purchases",p.id),{...p,at:Date.now()});
-  await setDoc(doc(db,"usage",String(p.templateId)),{count:increment(1),title:p.templateTitle},{merge:true});
-  seenP.add(p.id);localStorage.setItem("tpl_synced_p",JSON.stringify([...seenP]))}catch(e){}}}
-async function pushCatalog(){try{if(typeof T==="undefined")return;
- await setDoc(doc(db,"site","catalog"),{items:T.map(t=>({id:t.id,title:t.title,cat:t.cat,prem:!!t.prem}))})}catch(e){}}
-async function pull(){
- try{const c=await getDoc(doc(db,"site","config"));
-  if(c.exists()){applyRemoteSiteConfig(c.data());}
-  else {await pullRestConfig();}
- }catch(e){await pullRestConfig();}
- try{
-  const s=sess();if(s&&s.username){const u=await getDoc(doc(db,"users",s.username));
-   if(u.exists()){const d=u.data(),r=J("gryxcell_firebase_users_v1","{}");
-    if(r[s.username]){let ch=false;
-     if(!!d.banned!==!!r[s.username].banned){r[s.username].banned=!!d.banned;r[s.username].banReason=d.banReason||"";ch=true}
-     if(d.recoveryId&&d.recoveryId!==r[s.username].recoveryId){if(d.email)r[s.username].email=d.email;if(d.newPassword)r[s.username].password=d.newPassword;r[s.username].recoveryId=d.recoveryId;ch=true}
-     if(ch){localStorage.setItem("gryxcell_firebase_users_v1",JSON.stringify(r));syncSiteGatesUI()}}}}
- }catch(e){}}
-const push=()=>{pushUsers();pushPurchases()};
-const _s=Storage.prototype.setItem;let tm;
-Storage.prototype.setItem=function(k,v){_s.apply(this,arguments);if(/users_v1|purchases_ledger/.test(k)){clearTimeout(tm);tm=setTimeout(push,800)}};
-pushCatalog();push();pull();
-setInterval(pull, 2500);
-window.addEventListener("focus", () => { window.syncSiteGatesUI && syncSiteGatesUI(); pull(); });
-document.addEventListener("visibilitychange", () => { if (!document.hidden) { window.syncSiteGatesUI && syncSiteGatesUI(); pull(); } });
+  window.__fbReady = true;
+})();
 </script>
 <script>
 (function(){var $=function(i){return document.getElementById(i)};
 var rp=$("regPassword");if(rp)rp.addEventListener("input",function(){var v=rp.value,s=0;if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v)&&/[a-z]/.test(v))s++;if(/\d/.test(v)&&/[^A-Za-z0-9]/.test(v))s++;
 var c=["#ef4444","#f59e0b","#eab308","#10b981","#059669"],t=["Too short","Weak","Okay","Strong","Very strong"],b=$("pwBar");b.style.width=(v?(s+1)*20:0)+"%";b.style.background=c[s];$("pwHint").textContent=v?"Password strength: "+t[s]:"Use 6+ characters. Mix letters, numbers and symbols for a stronger password."});
-setTimeout(function(){if(window.__fbReady)return;["submitRegisterBtn","submitLoginBtn","submitForgotBtn"].forEach(function(id){var b=$(id);if(b)b.addEventListener("click",function(){var n=$("authStatusBanner");n.className="auth-status-banner show err";n.textContent="Could not connect to the server. Check your internet connection, then reload the page."})})},4000)})();
+setTimeout(function(){if(window.__fbReady)return;["submitRegisterBtn","submitLoginBtn","submitForgotBtn","submitChangeEmailBtn"].forEach(function(id){var b=$(id);if(b)b.addEventListener("click",function(){var n=$("authStatusBanner");n.className="auth-status-banner show err";n.textContent="Could not connect to the server. Check your internet connection, then reload the page."})})},4000)})();
 </script>
 
 </body>
