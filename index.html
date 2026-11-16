@@ -6557,10 +6557,16 @@ const KW = {
 };
 
 let q = "", cat = "All", mode = "all", activePage = "home", pending = null, timer = null, cur = null, curCreationId = null, moreTarget = null, vidPlaying = true, soundOn = false, audioTimer = null, forcedScene = "all";
+const REWARDED_UNLOCK_KEY = "th_rewarded_unlocks_v1";
 let unlocked = [], savedIds = [], userCreations = [];
 let activeAdUnlock = { templateId: null, watched: 0, required: 5 };
 let adStepInFlight = false;
-try { unlocked = JSON.parse(localStorage.getItem("th_u3") || "[]"); } catch(e) {}
+try {
+  unlocked = JSON.parse(localStorage.getItem(REWARDED_UNLOCK_KEY) || "[]");
+  if (!Array.isArray(unlocked)) unlocked = [];
+  // Discard the legacy ad-free unlock list so every premium item starts locked.
+  localStorage.removeItem("th_u3");
+} catch(e) { unlocked = []; }
 try { savedIds = JSON.parse(localStorage.getItem("th_saved") || "[]"); } catch(e) {}
 try { userCreations = JSON.parse(localStorage.getItem("kreva_creations_v1") || "[]"); } catch(e) {}
 try {
@@ -6606,7 +6612,7 @@ if (!userCreations.length) {
 const $ = s => document.querySelector(s);
 
 function save() {
-  try { localStorage.setItem("th_u3", JSON.stringify(unlocked)); } catch(e) {}
+  try { localStorage.setItem(REWARDED_UNLOCK_KEY, JSON.stringify(unlocked)); } catch(e) {}
   try { localStorage.setItem("th_saved", JSON.stringify(savedIds)); } catch(e) {}
   try { localStorage.setItem("kreva_creations_v1", JSON.stringify(userCreations)); } catch(e) {}
   try { localStorage.setItem("th_active_ad_progress", JSON.stringify(activeAdUnlock)); } catch(e) {}
@@ -8888,6 +8894,7 @@ $("#mSim").onclick = () => {
 let rewardPlayer = null;
 let rewardTarget = null;
 let rewardCompleted = false;
+let rewardAdStarted = false;
 
 function closeRewardUnlock() {
   if (rewardPlayer) {
@@ -8900,6 +8907,7 @@ function closeRewardUnlock() {
   }
   rewardTarget = null;
   rewardCompleted = false;
+  rewardAdStarted = false;
 }
 
 function refreshAllCardGridsForAdProgress() {
@@ -8913,7 +8921,8 @@ function refreshAllCardGridsForAdProgress() {
 }
 
 function finishRewardedUnlock() {
-  if (rewardCompleted || !rewardTarget) return;
+  // Never unlock from a generic media-ended event or an ad-load failure.
+  if (rewardCompleted || !rewardTarget || !rewardAdStarted) return;
   rewardCompleted = true;
   const t = rewardTarget;
   if (!unlocked.includes(t.id)) unlocked.push(t.id);
@@ -8931,6 +8940,7 @@ function openAd(t) {
   if (!t) return;
   rewardTarget = t;
   rewardCompleted = false;
+  rewardAdStarted = false;
   const modal = $("#rewardUnlockM");
   const status = $("#rewardUnlockStatus");
   const copy = $("#rewardUnlockCopy");
@@ -8956,14 +8966,10 @@ function openAd(t) {
       adTagUrl: "https://youradexchange.com/video/select.php?r=12451366",
     });
     rewardPlayer.on("ads-ad-started", () => {
+      rewardAdStarted = true;
       if (status) status.textContent = "Rewarded video is playing…";
     });
     rewardPlayer.on("ads-ad-ended", finishRewardedUnlock);
-    rewardPlayer.on("adend", finishRewardedUnlock);
-    rewardPlayer.on("ended", () => {
-      if (rewardPlayer.ima && rewardPlayer.ima.adsActive && rewardPlayer.ima.adsActive()) return;
-      finishRewardedUnlock();
-    });
     rewardPlayer.on("adserror", () => {
       if (status) status.textContent = "The rewarded video could not load. Please try again.";
     });
@@ -9061,6 +9067,13 @@ $("#resetPhotosBtn").onclick = () => {
 };
 
 function openUse(t, existingCreation) {
+  if (t && t.prem) {
+    const activeSub = typeof getActiveUserSubscription === "function" ? getActiveUserSubscription() : null;
+    if (!(activeSub && activeSub.isActive) && !unlocked.includes(t.id)) {
+      openAd(t);
+      return;
+    }
+  }
   cur = t;
   curCreationId = existingCreation ? existingCreation.cid : null;
   vidPlaying = true;
