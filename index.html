@@ -11800,5 +11800,16 @@ var rp=$("regPassword");if(rp)rp.addEventListener("input",function(){var v=rp.va
 var c=["#ef4444","#f59e0b","#eab308","#10b981","#059669"],t=["Too short","Weak","Okay","Strong","Very strong"],b=$("pwBar");b.style.width=(v?(s+1)*20:0)+"%";b.style.background=c[s];$("pwHint").textContent=v?"Password strength: "+t[s]:"Use 6+ characters. Mix letters, numbers and symbols for a stronger password."});
 setTimeout(function(){if(window.__fbReady)return;["submitRegisterBtn","submitLoginBtn","submitForgotBtn"].forEach(function(id){var b=$(id);if(b)b.addEventListener("click",function(){var n=$("authStatusBanner");n.className="auth-status-banner show err";n.textContent="Could not connect to the server. Check your internet connection or disable ad-blockers, then reload the page."})})},4000)})();
 </script>
+
+<script>
+// Register the supplied service worker (requires HTTPS or localhost).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./service-worker.js').catch(function (error) {
+      console.error('Service worker registration failed:', error);
+    });
+  });
+}
+</script>
 </body>
 </html>
