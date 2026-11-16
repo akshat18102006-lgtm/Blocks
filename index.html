@@ -6530,7 +6530,11 @@ const KW = {
 
 let q = "", cat = "All", mode = "all", activePage = "home", pending = null, timer = null, cur = null, curCreationId = null, moreTarget = null, vidPlaying = true, soundOn = false, audioTimer = null, forcedScene = "all";
 const REWARDED_UNLOCK_KEY = "th_rewarded_unlocks_v1";
+const AD_PROGRESS_KEY = "th_rewarded_ad_counts_v1";
+const AD_PENDING_KEY = "th_rewarded_ad_pending_v1";
 let unlocked = [], savedIds = [], userCreations = [];
+let adProgressByTemplate = {};
+let pendingAdByTemplate = {};
 let activeAdUnlock = { templateId: null, watched: 0, required: 5 };
 let adStepInFlight = false;
 try {
@@ -6539,6 +6543,15 @@ try {
   // Discard the legacy ad-free unlock list so every premium item starts locked.
   localStorage.removeItem("th_u3");
 } catch(e) { unlocked = []; }
+try {
+  const savedRules = localStorage.getItem("th_reward_rules_version");
+  if (!savedRules) {
+    // Clear legacy one-ad unlocks once; preserve counts/unlocks from the previous 5/10 rules.
+    unlocked = [];
+    localStorage.setItem(REWARDED_UNLOCK_KEY, "[]");
+  }
+  localStorage.setItem("th_reward_rules_version", "templates-3-videos-5-v2");
+} catch(e) {}
 try { savedIds = JSON.parse(localStorage.getItem("th_saved") || "[]"); } catch(e) {}
 try { userCreations = JSON.parse(localStorage.getItem("kreva_creations_v1") || "[]"); } catch(e) {}
 try {
@@ -6546,10 +6559,16 @@ try {
   if (savedProg && typeof savedProg === "object") activeAdUnlock = savedProg;
 } catch(e) {}
 
-function getRequiredAdsForItem(t) {
-  // Advertising has been removed; premium items open directly.
-  return 0;
-}
+try {
+  const savedCounts = JSON.parse(localStorage.getItem(AD_PROGRESS_KEY) || "{}");
+  if (savedCounts && typeof savedCounts === "object" && !Array.isArray(savedCounts)) adProgressByTemplate = savedCounts;
+} catch(e) {}
+try {
+  const savedPending = JSON.parse(localStorage.getItem(AD_PENDING_KEY) || "{}");
+  if (savedPending && typeof savedPending === "object" && !Array.isArray(savedPending)) pendingAdByTemplate = savedPending;
+} catch(e) {}
+function getRequiredAdsForItem(t) { return t && t.isVideo ? 5 : 3; }
+function getAdsWatchedForItem(t) { return t ? Math.max(0, Number(adProgressByTemplate[String(t.id)] || 0)) : 0; }
 
 // Seed 2 initial custom creations if empty so "Your Designs" page immediately shows designs created in the app
 if (!userCreations.length) {
@@ -6588,6 +6607,8 @@ function save() {
   try { localStorage.setItem("th_saved", JSON.stringify(savedIds)); } catch(e) {}
   try { localStorage.setItem("kreva_creations_v1", JSON.stringify(userCreations)); } catch(e) {}
   try { localStorage.setItem("th_active_ad_progress", JSON.stringify(activeAdUnlock)); } catch(e) {}
+  try { localStorage.setItem(AD_PROGRESS_KEY, JSON.stringify(adProgressByTemplate)); } catch(e) {}
+  try { localStorage.setItem(AD_PENDING_KEY, JSON.stringify(pendingAdByTemplate)); } catch(e) {}
 }
 
 // ============================================================================
@@ -7105,8 +7126,10 @@ function renderCardHTML(t) {
   const isRec = typeof isTemplateRecommended === "function" && isTemplateRecommended(t.id);
   const recBadge = isRec ? `<div class="rec-flame-badge" title="Most Recommended by Admin">🔥 MOST RECOMMENDED</div>` : "";
   if (t.prem) {
+    const adNeed = getRequiredAdsForItem(t);
+    const adDone = getAdsWatchedForItem(t);
     crownBadge = lock
-      ? `<div class="crown-badge" title="Premium item">👑 PREMIUM</div>`
+      ? `<div class="crown-badge" title="${adDone} of ${adNeed} ads watched">👑 PREMIUM · ${adDone}/${adNeed} ADS</div>`
       : `<div class="crown-badge unlocked-pill" title="Premium item unlocked">👑 UNLOCKED ✓</div>`;
   } else {
     crownBadge = `<div class="crown-badge free-pill" title="Free to customize & download">FREE</div>`;
@@ -7124,7 +7147,7 @@ function renderCardHTML(t) {
     : "";
 
   const btnLabel = lock
-    ? "🎁 Watch video to unlock"
+    ? `🎁 Watch Ad ${getAdsWatchedForItem(t) + 1} of ${getRequiredAdsForItem(t)}`
     : (t.isVideo ? "✨ Customize Video" : "Customize Template");
 
   return `<div class="card ${t.prem ? "pr" : ""} ${t.isVideo ? "vid-card" : ""} ${isWide ? "wide" : ""}" data-id="${t.id}" style="cursor:pointer">
@@ -8865,13 +8888,91 @@ $("#mSim").onclick = () => {
 
 function openAd(t) {
   if (!t) return;
-  if (typeof window.requestEzmobOutstream !== "function") {
-    showToast("The video ad is still loading. Please try again in a moment.");
+  const previous = document.getElementById("partnerRewardModal");
+  if (previous) previous.remove();
+  const required = getRequiredAdsForItem(t);
+  const watched = getAdsWatchedForItem(t);
+  function showUnlockSuccess() {
+    const success = document.createElement("div");
+    success.id = "premiumUnlockSuccess";
+    success.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
+    success.innerHTML = `<div style="max-width:420px;width:100%;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font:600 15px/1.5 system-ui,sans-serif"><h2 style="margin:0 0 8px">🎉 Congratulations!</h2><p style="margin:0 0 16px">You have unlocked the ${t.isVideo ? "premium video" : "premium template"} after completing all ${required} ad steps.</p><button type="button" id="premiumUnlockContinue" style="border:0;border-radius:10px;padding:11px 20px;background:#0284c7;color:#fff;font-weight:800;cursor:pointer">Continue</button></div>`;
+    document.body.appendChild(success);
+    success.querySelector("#premiumUnlockContinue").onclick = () => { success.remove(); openUse(t); };
+  }
+  if (unlocked.includes(t.id)) { openUse(t); return; }
+  if (watched >= required) {
+    unlocked.push(t.id);
+    save();
+    showUnlockSuccess();
     return;
   }
-  showToast("Loading a partner video…");
-  window.requestEzmobOutstream(function (hasBid) {
-    if (!hasBid) showToast("No video ad is available right now. Please try again later.");
+  const overlay = document.createElement("div");
+  overlay.id = "partnerRewardModal";
+  overlay.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
+  overlay.innerHTML = `
+    <div style="position:relative;max-width:440px;width:100%;min-height:220px;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:600 15px/1.5 system-ui,sans-serif">
+      <button type="button" id="partnerRewardClose" aria-label="Close ad and count this ad" title="Close and count this ad" style="display:none;position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;border-radius:50%;background:#111827;color:#fff;font-size:27px;line-height:1;cursor:pointer">×</button>
+      <h2 style="margin:0;font-size:1.2rem">Watch Ad ${watched + 1} of ${required} to Unlock ${t.isVideo ? "Premium Video" : "Premium Template"}</h2>
+      <p id="partnerRewardInstruction" style="margin:0;max-width:360px;text-align:center;font-size:.9rem">After tapping Watch Ad, leave the ad tab open and return to this page after 20 seconds. The × will appear here; tap it to count this ad.</p>
+      <a id="partnerRewardLink" href="https://araplhn.org/4/50e4b8dd969999935a8cccbe2ec8eecb" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:12px 22px;background:#0284c7;color:#fff;text-decoration:none;font-weight:800">Watch Ad</a>
+    </div>`;
+  document.body.appendChild(overlay);
+  let closeTimer = null;
+  const itemKey = String(t.id);
+  const closeButton = overlay.querySelector("#partnerRewardClose");
+  const adLink = overlay.querySelector("#partnerRewardLink");
+  const instruction = overlay.querySelector("#partnerRewardInstruction");
+  function revealCloseButton() {
+    closeButton.style.display = "flex";
+    closeButton.style.alignItems = "center";
+    closeButton.style.justifyContent = "center";
+  }
+  function resumePendingAd() {
+    const startedAt = Number(pendingAdByTemplate[itemKey] || 0);
+    if (!startedAt) return false;
+    adLink.style.display = "none";
+    const remaining = Math.max(0, 20000 - (Date.now() - startedAt));
+    instruction.textContent = remaining
+      ? `Your ad step is saved. Return here after 20 seconds total; the × will appear in about ${Math.ceil(remaining / 1000)} seconds.`
+      : "Your saved ad step is ready. Tap × to count it.";
+    if (remaining === 0) revealCloseButton();
+    else closeTimer = setTimeout(revealCloseButton, remaining);
+    return true;
+  }
+  const hasPendingAd = resumePendingAd();
+  if (!hasPendingAd) adLink.addEventListener("click", () => {
+    pendingAdByTemplate[itemKey] = Date.now();
+    save();
+    adLink.style.display = "none";
+    instruction.textContent = "Ad opened. Return to this page after 20 seconds; the × will appear here to count the ad.";
+    if (closeTimer) clearTimeout(closeTimer);
+    closeTimer = setTimeout(revealCloseButton, 20000);
+  });
+  closeButton.addEventListener("click", () => {
+    delete pendingAdByTemplate[itemKey];
+    const nextWatched = getAdsWatchedForItem(t) + 1;
+    adProgressByTemplate[itemKey] = nextWatched;
+    save();
+    if (closeTimer) clearTimeout(closeTimer);
+    overlay.remove();
+    if (nextWatched >= required) {
+      if (!unlocked.includes(t.id)) unlocked.push(t.id);
+      save();
+      if (typeof recordUnlockOrPurchase === "function") recordUnlockOrPurchase(t, "Partner ad reward", nextWatched);
+      if (typeof bar === "function") bar();
+      if (typeof grid === "function") grid();
+      if (typeof renderCreationsPage === "function" && activePage === "creations") renderCreationsPage();
+      showUnlockSuccess();
+    } else {
+      if (typeof bar === "function") bar();
+      if (typeof grid === "function") grid();
+      const stepNotice = document.createElement("div");
+      stepNotice.style.cssText = "position:fixed;inset:0;z-index:100000;background:rgba(8,15,30,.82);display:flex;align-items:center;justify-content:center;padding:18px";
+      stepNotice.innerHTML = `<div style="max-width:420px;width:100%;background:var(--card,#fff);color:var(--text,#123);border-radius:18px;padding:26px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font:600 15px/1.5 system-ui,sans-serif"><h2 style="margin:0 0 8px">Ad ${nextWatched} watch step completed!</h2><p style="margin:0">${required - nextWatched} more ad${required - nextWatched === 1 ? "" : "s"} to go. Next: Ad ${nextWatched + 1} of ${required}.</p></div>`;
+      document.body.appendChild(stepNotice);
+      setTimeout(() => { stepNotice.remove(); openAd(t); }, 1600);
+    }
   });
 }
 let modalSecTimer = null, modalSecElapsed = 0;
@@ -11686,74 +11787,6 @@ var rp=$("regPassword");if(rp)rp.addEventListener("input",function(){var v=rp.va
 var c=["#ef4444","#f59e0b","#eab308","#10b981","#059669"],t=["Too short","Weak","Okay","Strong","Very strong"],b=$("pwBar");b.style.width=(v?(s+1)*20:0)+"%";b.style.background=c[s];$("pwHint").textContent=v?"Password strength: "+t[s]:"Use 6+ characters. Mix letters, numbers and symbols for a stronger password."});
 setTimeout(function(){if(window.__fbReady)return;["submitRegisterBtn","submitLoginBtn","submitForgotBtn"].forEach(function(id){var b=$(id);if(b)b.addEventListener("click",function(){var n=$("authStatusBanner");n.className="auth-status-banner show err";n.textContent="Could not connect to the server. Check your internet connection, then reload the page."})})},4000)})();
 </script>
-
-<!-- EZMob Prebid outstream ad unit -->
-<script type="text/javascript" src="https://docdn.ezmob.com/prebid.js" async></script>
-<script>
-	var pbjs = pbjs || {};
-	pbjs.que = pbjs.que || [];
-	pbjs.que.push(function() {
-		var adUnits = [{
-			code: 'container-1',
-			mediaTypes: {
-				video: {
-					context: 'outstream',
-					playerSize: [300, 250],
-					renderer: {
-						url: 'https://docdn.ezmob.com/outstream_pb.js',
-						render: renderOutstream
-					}
-				}
-			},
-			bids: [{
-					 bidder: 'adkernel',
-					 params: {
-						zoneId: 426874,
-						host: 'cpm.ezmob.com'
-					}
-			}]
-		}];
-		pbjs.addAdUnits(adUnits);
-		window.requestEzmobOutstream = function (onResult) {
-			pbjs.requestBids({
-				adUnitCodes: ['container-1'],
-				bidsBackHandler: function () {
-					var hasBid = process('container-1');
-					if (typeof onResult === 'function') onResult(hasBid);
-				}
-			});
-		};
-	});
-
-	function process(adUnit) {
-		var bidResponses = pbjs.getHighestCpmBids(adUnit);
-		if (bidResponses.length == 0) return false;
-		var bid = bidResponses[0];
-		pbjs.renderAd(document, bid.adId);
-		return true;
-	}
-
-	function renderOutstream(bid) {
-		OutstreamPlayerPB(bid, {
-			displayMode: 'floating',
-			transitions: true,
-			vpaidMode: 2
-		});
-	}
-</script>
-<div id="container-1"></div>
-
-<script>
-window.adk_pdisp = {'h' : 'xml.qualiclicks.com',
-  'f' : 1464008,
-  'a' : 'N8DN',
-  'ps' : [1,5],
-  'cin' : 4,
-  's' : 'DP1464008',
-  'q' : [],
-  't' : 24};
-</script>
-<script src="//static.qualiclicks.com/tabu/display.js"></script>
 
 </body>
 </html>
